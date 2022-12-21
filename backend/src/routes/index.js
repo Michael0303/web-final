@@ -1,6 +1,7 @@
-import { Router } from 'express'
-import ScoreCardRouter from './scoreCard'
+import { Router } from "express"
+import userRouter from "./user"
 
 const router = Router()
-router.use('/', ScoreCardRouter)
+router.use("/api/user", userRouter)
+
 export default router
