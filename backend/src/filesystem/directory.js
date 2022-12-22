@@ -37,8 +37,8 @@ const listDir = async (username, dirPath) => {
         }
     } catch (err) {
         if (err.code === "ENOENT") {
-            console.log("invalid path.", directoryPath)
-            return { error: "invalid path." }
+            console.log("no such directory.", directoryPath)
+            return { error: "no such directory." }
         }
         throw err
     }
