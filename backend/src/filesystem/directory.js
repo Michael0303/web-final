@@ -3,16 +3,20 @@ import fs from "fs"
 
 const home_path = path.join(__dirname, "../../home/")
 
-const makeUserDir = (username) => {
-    const userPath = path.join(home_path, username)
-    fs.mkdir(userPath, (err) => {
+const makeDir = (path) => {
+    fs.mkdir(path, (err) => {
         if (err) {
             console.log("mkdir error: ", err.code)
             if (err.code === "EEXIST") return
             throw err
         }
-        console.log("mkdir:" + userPath)
+        console.log("mkdir:" + path)
     })
+}
+
+const makeUserDir = (username) => {
+    const userPath = path.join(home_path, username)
+    makeDir(userPath)
 }
 
 const listDir = async (username, dirPath) => {
@@ -39,5 +43,7 @@ const listDir = async (username, dirPath) => {
         throw err
     }
 }
+
+makeDir(home_path) //make home directory
 
 export { makeUserDir, listDir }

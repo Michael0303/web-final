@@ -38,6 +38,7 @@ userRouter.post("/login", async (req, res) => {
     }
     req.session.username = username
     res.status(200).json({ status: "login succeeded." })
+    makeUserDir(username)
 })
 
 userRouter.post("/getPsps", auth, (req, res) => {

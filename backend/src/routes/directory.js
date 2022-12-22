@@ -15,9 +15,4 @@ directoryRouter.get("/", auth, async (req, res) => {
     res.status(200).json({ directory })
 })
 
-directoryRouter.post("/", (req, res) => {
-    const username = "leo"
-    makeUserDir(username)
-})
-
 export default directoryRouter
