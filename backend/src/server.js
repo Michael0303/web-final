@@ -1,8 +1,9 @@
 import express from "express"
 import cors from "cors"
+import path from "path"
 import db from "./db"
 import routes from "./routes"
-import path from "path"
+import { useSession } from "./middlewares/session"
 
 db.connect()
 const app = express()
@@ -10,6 +11,7 @@ if (process.env.NODE_ENV !== "production") {
     app.use(cors())
 }
 app.use(express.json())
+app.use(useSession())
 app.use("/", routes)
 // app.use("/", (req, res, next) => {
 //     var options = {

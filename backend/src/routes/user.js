@@ -1,22 +1,17 @@
 import { Router } from "express"
-import Jwt from "jsonwebtoken"
 import User from "../models/user"
-import { SECRET } from "../config"
-import verify from "../middlewares/verifyJWT"
-import ms from "ms"
+import { auth } from "../middlewares/session"
 
 const userRouter = Router()
 
 userRouter.post("/signup", async (req, res) => {
     const { username, password } = req.body
     if (!username || !password) {
-        res.status(400).json({ error: "username or password is empty." })
-        return
+        return res.status(400).json({ error: "username or password is empty." })
     }
     const user = await User.findOne({ username })
     if (user) {
-        res.status(400).json({ error: "username exists." })
-        return
+        return res.status(400).json({ error: "username exists." })
     }
 
     const newUser = new User({ username, password })
@@ -30,26 +25,20 @@ userRouter.post("/signup", async (req, res) => {
 userRouter.post("/login", async (req, res) => {
     const { username, password } = req.body
     if (!username || !password) {
-        res.status(400).json({ error: "username or password is empty." })
-        return
+        return res.status(400).json({ error: "username or password is empty." })
     }
     const user = await User.findOne({ username })
     if (!user) {
-        res.status(400).json({ error: "user not found." })
-        return
+        return res.status(400).json({ error: "user not found." })
     }
     if (user.password !== password) {
-        res.status(400).json({ error: "wrong password." })
-        return
+        return res.status(400).json({ error: "wrong password." })
     }
-    const EXPIRE_IN = ms("10s")
-    console.log("date", new Date())
-    const token = Jwt.sign({ username }, SECRET, { expiresIn: EXPIRE_IN })
-    res.cookie("token", token, { maxAge: EXPIRE_IN, httpOnly: true })
-    res.status(200).json({ status: "login succeded.", token })
+    req.session.username = username
+    res.status(200).json({ status: "login succeeded." })
 })
 
-userRouter.post("/getPsps", verify(), (req, res) => {
+userRouter.post("/getPsps", auth, (req, res) => {
     res.status(200).send("pspsps")
 })
 
