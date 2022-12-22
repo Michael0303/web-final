@@ -1,5 +1,6 @@
 import { Router } from "express"
 import User from "../models/user"
+import { makeUserDir } from "../filesystem/directory"
 import { auth } from "../middlewares/session"
 
 const userRouter = Router()
@@ -20,6 +21,7 @@ userRouter.post("/signup", async (req, res) => {
     } else {
         res.status(500).json({ error: "something went wrong." })
     }
+    makeUserDir(username)
 })
 
 userRouter.post("/login", async (req, res) => {
