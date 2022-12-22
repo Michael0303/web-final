@@ -23,8 +23,14 @@ const listDir = async (username, dirPath) => {
         return { error: "invalid path." }
     }
     try {
-        const files = await fs.promises.readdir(directoryPath)
-        return { files }
+        const dirents = await fs.promises.readdir(directoryPath, {
+            withFileTypes: true,
+        })
+        return {
+            directory: dirents.map((dirent) => {
+                return { name: dirent.name, isDirectory: dirent.isDirectory() }
+            }),
+        }
     } catch (err) {
         if (err.code === "ENOENT") {
             console.log("invalid path.", directoryPath)
