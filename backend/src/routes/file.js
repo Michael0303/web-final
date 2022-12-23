@@ -1,6 +1,7 @@
 import { Router } from "express"
 import { auth } from "../middlewares/session"
-import { checkFile } from "../filesystem/file"
+import { upload } from "../middlewares/multer"
+import { checkFile, writeFile } from "../filesystem/file"
 
 const fileRouter = Router()
 
@@ -11,6 +12,16 @@ fileRouter.get("/", auth, async (req, res) => {
         return res.status(400).json({ error })
     }
     res.status(200).sendFile(userFilePath)
+})
+
+fileRouter.post("/upload", auth, upload.single("file"), async (req, res) => {
+    const { file } = req
+    const { path = "/" } = req.query
+    const { error } = await writeFile(req.session.username, path, file)
+    if (error) {
+        return res.status(400).json({ error })
+    }
+    res.status(200).json({ status: "file upload succeeded." })
 })
 
 export default fileRouter

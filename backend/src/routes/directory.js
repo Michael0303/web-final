@@ -14,7 +14,7 @@ directoryRouter.get("/", auth, async (req, res) => {
 })
 
 directoryRouter.post("/create", auth, async (req, res) => {
-    const { path } = req.body
+    const { path } = req.query
     const { error } = await makeUserDir(req.session.username, path)
     if (error) {
         return res.status(400).json({ error })
