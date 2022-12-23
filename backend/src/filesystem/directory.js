@@ -3,7 +3,7 @@ import fs from "fs"
 
 const home_path = path.join(__dirname, "../../home/")
 
-const makeDir = (path) => {
+const makeDir = async (path) => {
     fs.mkdir(path, (err) => {
         if (err) {
             console.log("mkdir error: ", err.code)
@@ -14,15 +14,39 @@ const makeDir = (path) => {
     })
 }
 
-const makeUserDir = (username) => {
+const isLegal = (username, directoryPath) => {
+    const relativePath = path.relative(home_path, directoryPath)
+    if (!relativePath.startsWith(username)) {
+        return false
+    }
+    return true
+}
+
+const makeUserHome = (username) => {
     const userPath = path.join(home_path, username)
     makeDir(userPath)
 }
 
+const makeUserDir = async (username, dirPath) => {
+    const directoryPath = path.join(home_path, username, dirPath)
+    if (!isLegal(username, directoryPath)) {
+        console.log("invalid path.", relativePath)
+        return { error: "invalid path." }
+    }
+    try {
+        await fs.promises.mkdir(directoryPath, {
+            recursive: true,
+        })
+        return {}
+    } catch (err) {
+        if (err.code === "EEXIST") return { error: "directory exists." }
+        else throw err
+    }
+}
+
 const listDir = async (username, dirPath) => {
     const directoryPath = path.join(home_path, username, dirPath)
-    const relativePath = path.relative(home_path, directoryPath)
-    if (!relativePath.startsWith(username)) {
+    if (!isLegal(username, directoryPath)) {
         console.log("invalid path.", relativePath)
         return { error: "invalid path." }
     }
@@ -46,4 +70,4 @@ const listDir = async (username, dirPath) => {
 
 makeDir(home_path) //make home directory
 
-export { makeUserDir, listDir }
+export { makeUserHome, listDir, makeUserDir }
