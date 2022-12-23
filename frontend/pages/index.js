@@ -6,8 +6,9 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
     return (
-        <ScoreCardProvider>
-            <App />
-        </ScoreCardProvider>
+        // <ScoreCardProvider>
+        //     <App />
+        // </ScoreCardProvider>
+        <h1>Hi I'm Homepage</h1>
     )
 }
