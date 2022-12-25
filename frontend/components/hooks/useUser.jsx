@@ -14,6 +14,8 @@ const UserContext = createContext({
     displayStatus: () => { },
 })
 
+const LOCALSTORAGE_KEY = 'save-user'
+
 const UserProvider = (props) => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -45,6 +47,20 @@ const UserProvider = (props) => {
     useEffect(() => {
         displayStatus(status)
     }, [status])
+
+    useEffect(() => {
+        if (signedIn) {
+            localStorage.setItem(LOCALSTORAGE_KEY, username)
+            console.log("save username: " + username)
+        }
+    }, [username, signedIn])
+
+    useEffect(() => {
+        if (!signedIn) {
+            const savedUser = localStorage.getItem(LOCALSTORAGE_KEY)
+            if (savedUser) { setUsername(savedUser) }
+        }
+    }, [])
 
     return (
         <UserContext.Provider

@@ -24,14 +24,6 @@ const IconWrapper = styled.div`
     justify-content: center;
 `
 
-// const tailLayout = {
-//     wrapperCol: {
-//         offset: 8,
-//         span: 16,
-//     },
-// };
-
-
 export default function SignIn() {
     const { username, password, signedIn, status, setUsername, setPassword, setSignedIn, setStatus } = useUser()
     const [loading, setLoading] = useState(false)
@@ -86,6 +78,7 @@ export default function SignIn() {
                             required: true,
                             message: "Please enter your username"
                         }]}
+                        initialValue={username}
                     >
                         <Input
                             placeholder="Enter your username"
@@ -99,6 +92,7 @@ export default function SignIn() {
                                     />
                                 </Tooltip>
                             }
+                            value={username}
                             onChange={(e) => {
                                 setUsername(e.target.value)
                             }}
@@ -115,6 +109,7 @@ export default function SignIn() {
                             placeholder="Enter your password"
                             prefix={<KeyOutlined />}
                             iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                            value={password}
                             onChange={(e) => {
                                 setPassword(e.target.value)
                             }}
@@ -141,8 +136,8 @@ export default function SignIn() {
                     </Form.Item>
                 </Form>
 
-                {/* <Space direction="vertical">
-                <Input
+                {/* <Space direction="vertical"> */}
+                {/* <Input
                     placeholder="Enter your username"
                     prefix={<UserOutlined className="site-form-item-icon" />}
                     suffix={
@@ -154,10 +149,12 @@ export default function SignIn() {
                             />
                         </Tooltip>
                     }
+                    value={username}
                     onChange={(e) => {
                         setUsername(e.target.value)
                     }}
-                />
+                /> */}
+                {/*
                 <Input.Password
                     placeholder="Enter your password"
                     prefix={<KeyOutlined />}

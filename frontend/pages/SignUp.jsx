@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { EyeInvisibleOutlined, EyeTwoTone, InfoCircleOutlined, UserOutlined, KeyOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/router'
 import styled from 'styled-components';
 import bcrypt from 'bcryptjs'
 // import PasswordChecklist from "react-password-checklist"
+import dynamic from 'next/dynamic';
+const PasswordChecklist = dynamic(() => import('react-password-checklist'), {
+    ssr: false,
+});
 import { Form, Button, Space, Input, Tooltip } from 'antd';
 import { useUser } from '../components/hooks/useUser';
 import Title from '../components/Title';
@@ -16,12 +20,11 @@ const IconWrapper = styled.div`
     justify-content: center;
 `
 const ListWrapper = styled.div`
-    /* background-color: green; */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5vw;
-    vertical-align: middle;
+    li {
+        /* background-color: purple; */
+        display: flex;
+        align-items: center;
+    }
 `
 const PageWrapper = styled.div`
     height: 70vh;
@@ -38,6 +41,7 @@ export default function SignUp() {
     const [password, setPassword] = useState("")
     const [passwordAgain, setPasswordAgain] = useState("")
     const [loading, setLoading] = useState(false)
+    const [valid, setValid] = useState(false)
     const router = useRouter()
 
 
@@ -77,6 +81,7 @@ export default function SignUp() {
 
         }
     }
+
 
     return (
         <>
@@ -139,23 +144,27 @@ export default function SignUp() {
                             }}
                         />
                     </Form.Item>
-                    {/* <Form.Item>
+                    <Form.Item>
                         <ListWrapper>
                             <PasswordChecklist
                                 rules={["minLength", "specialChar", "number", "capital", "match"]}
                                 minLength={5}
                                 value={password}
                                 valueAgain={passwordAgain}
-                                onChange={(isValid) => { }}
+                                onChange={(isValid) => {
+                                    if (isValid) setValid(true)
+                                }}
+                                style={{ fontSize: "1.5vw" }}
                             />
                         </ListWrapper>
-                    </Form.Item> */}
+                    </Form.Item>
                     <Form.Item>
                         <IconWrapper>
                             <Button
                                 type="primary"
                                 loading={loading}
                                 onClick={() => handleSignUp(username, password)}
+                                disabled={!valid}
                             >
                                 Submit
                             </Button>
