@@ -152,7 +152,7 @@ export default function SignUp() {
                                 value={password}
                                 valueAgain={passwordAgain}
                                 onChange={(isValid) => {
-                                    if (isValid) setValid(true)
+                                    if (isValid) { setValid(true) } else { setValid(false) }
                                 }}
                                 style={{ fontSize: "1.5vw" }}
                             />
