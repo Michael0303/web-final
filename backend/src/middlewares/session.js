@@ -5,13 +5,14 @@ const useSession = () =>
     session({
         secret: SECRET,
         name: "username",
-        saveUninitialized: false,
-        resave: true,
+        saveUninitialized: true,
+        resave: false,
+        cookie: { secure: false },
     })
 
 const auth = (req, res, next) => {
+    console.log(req.session.id)
     if (req.session.username) {
-        console.log("authencated.")
         next()
     } else {
         console.log("not authencated.")

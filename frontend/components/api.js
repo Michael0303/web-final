@@ -5,6 +5,7 @@ const API_ROOT = process.env.NODE_ENV === "production" ? "/" : "http://localhost
 
 const instance = axios.create({
   baseURL: API_ROOT,
+  withCredentials: true,
 });
 
 export default instance;

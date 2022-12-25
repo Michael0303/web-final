@@ -25,4 +25,26 @@ const checkFile = async (username, filePath) => {
     }
 }
 
-export { checkFile }
+const writeFile = async (username, folderPath, multerFile) => {
+    if (!multerFile) return { error: "no file attached." }
+    const { originalname, buffer } = multerFile
+    const userFolderpath = path.join(home_path, username, folderPath)
+    const relativePath = path.relative(home_path, userFolderpath)
+    if (!relativePath.startsWith(username)) {
+        console.log("invalid path.", relativePath)
+        return { error: "invalid path." }
+    }
+    try {
+        await fs.promises.stat(userFolderpath)
+        await fs.promises.writeFile(
+            path.join(userFolderpath, originalname),
+            buffer
+        )
+        return {}
+    } catch (err) {
+        if (err.code === "ENOENT") return { error: "no such directory." }
+        throw err
+    }
+}
+
+export { checkFile, writeFile }

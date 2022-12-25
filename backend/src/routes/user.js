@@ -1,6 +1,6 @@
 import { Router } from "express"
 import User from "../models/user"
-import { makeUserDir } from "../filesystem/directory"
+import { makeUserHome } from "../filesystem/directory"
 import { auth } from "../middlewares/session"
 
 const userRouter = Router()
@@ -21,10 +21,12 @@ userRouter.post("/signup", async (req, res) => {
     } else {
         res.status(500).json({ error: "something went wrong." })
     }
-    makeUserDir(username)
+    makeUserHome(username)
 })
 
 userRouter.post("/login", async (req, res) => {
+    console.log("hello")
+    console.log(req.body)
     const { username, password } = req.body
     if (!username || !password) {
         return res.status(400).json({ error: "username or password is empty." })
@@ -38,7 +40,7 @@ userRouter.post("/login", async (req, res) => {
     }
     req.session.username = username
     res.status(200).json({ status: "login succeeded." })
-    makeUserDir(username)
+    makeUserHome(username)
 })
 
 userRouter.post("/getPsps", auth, (req, res) => {

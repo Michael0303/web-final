@@ -8,7 +8,21 @@ import { useSession } from "./middlewares/session"
 db.connect()
 const app = express()
 if (process.env.NODE_ENV !== "production") {
-    app.use(cors())
+    // app.use(cors())
+    var corsOptions = {
+        origin: 'http://localhost:3000',
+        credentials : true
+       }
+      
+      app.use(cors(corsOptions));
+      
+      app.use(function (req, res, next) {	
+          res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');    
+          res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');    
+          res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');   
+          res.setHeader('Access-Control-Allow-Credentials', true);    
+          next();
+      });
 }
 app.use(express.json())
 app.use(useSession())

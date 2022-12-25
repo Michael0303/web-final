@@ -6,11 +6,12 @@ import Title from '../components/Title'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useEffect } from 'react'
+import axios from '../components/api';
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-    const { signedIn, setSignedIn } = useUser()
+    const { username,signedIn, setSignedIn } = useUser()
     const router = useRouter()
 
     // useEffect(() => {
@@ -18,19 +19,24 @@ export default function Home() {
     //         router.push("/SignIn")
     //     }
     // }, [])
+
+    const getFile = async()=>{
+        const stuff = await axios.post('/api/user/getPsps')
+        console.log(stuff)
+    }
+
+
     if (!signedIn && process.browser) {
         router.push("/SignIn")
     }
 
     return (
-        // <ScoreCardProvider>
-        //     <App />
-        // </ScoreCardProvider>
         <>
             {!signedIn ? <Title title={"Sign In First"} /> :
                 <>
                     <Title title={"Hi I'm Homepage"} />
-                    <Link href={"/SignIn"} onClick={() => setSignedIn(false)}>Log out</Link>
+                    <button onClick={getFile}> testing</button>
+                    <Link href={"/SignIn"} style={{border:"2px solid blue"}} onClick={() => setSignedIn(false)}>Log out</Link>
                 </>
             }
         </>

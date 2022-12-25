@@ -8,5 +8,8 @@
         "install:prod": "cd frontend && yarn install --freeze-lockfile && cd ../backend && yarn install",
         "build": "cd frontend && yarn build",
         "deploy": "cd backend && yarn deploy"
+    },
+    "dependencies": {
+        "multer": "^1.4.5-lts.1"
     }
 }
