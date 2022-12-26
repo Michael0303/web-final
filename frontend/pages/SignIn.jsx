@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useUser } from '../components/hooks/useUser';
 import { useRouter } from 'next/router'
 import styled from 'styled-components';
-import bcrypt from 'bcryptjs'
 import axios from '../components/api';
 import Title from '../components/Title';
 
@@ -25,28 +24,24 @@ const IconWrapper = styled.div`
 `
 
 export default function SignIn() {
-    const { username, password, signedIn, status, setUsername, setPassword, setSignedIn, setStatus } = useUser()
+    const { username, password, setUsername, setPassword, setSignedIn, setStatus } = useUser()
     const [loading, setLoading] = useState(false)
     const router = useRouter()
 
     const handleLogin = async (name, pwd) => {
         if (!name || !pwd) {
-            console.log("please enter username and password!")
             setStatus({
                 type: 'error',
                 msg: 'please enter username and password!'
             })
         } else {
             setLoading(true)
-            // let hashedPassword = bcrypt.hashSync(pwd)
             // call API -> POST /api/user/login 
             try {
                 const { data: { status } } = await axios.post('/api/user/login', {
                     username: name,
                     password: pwd
                 })
-                console.log(status)
-                console.log("go to mainpage")
                 setStatus({
                     type: 'success',
                     msg: 'redirect to your homepage'
@@ -54,7 +49,6 @@ export default function SignIn() {
                 setSignedIn(true)
                 router.push("/")
             } catch (e) {
-                console.log(e)
                 const { data: { error } } = e.response
                 setStatus({
                     type: 'error',
@@ -67,10 +61,8 @@ export default function SignIn() {
 
     return (
         <>
-
             <Title title={"Wellcome to NTU Cloud"} />
             <PageWrapper>
-
                 <Form>
                     <Form.Item
                         name="username"
@@ -126,8 +118,8 @@ export default function SignIn() {
                                     Sign In
                                 </Button>
                                 <Button
-                                    type="primary"
-                                    onClick={() => router.push("/SignUp")}
+                                    type="default"
+                                    onClick={() => router.push("/signup")}
                                 >
                                     Sign Up
                                 </Button>
@@ -135,52 +127,6 @@ export default function SignIn() {
                         </IconWrapper>
                     </Form.Item>
                 </Form>
-
-                {/* <Space direction="vertical"> */}
-                {/* <Input
-                    placeholder="Enter your username"
-                    prefix={<UserOutlined className="site-form-item-icon" />}
-                    suffix={
-                        <Tooltip title="Why don't you input your name right now!!">
-                            <InfoCircleOutlined
-                                style={{
-                                    color: 'rgba(0,0,0,.45)',
-                                }}
-                            />
-                        </Tooltip>
-                    }
-                    value={username}
-                    onChange={(e) => {
-                        setUsername(e.target.value)
-                    }}
-                /> */}
-                {/*
-                <Input.Password
-                    placeholder="Enter your password"
-                    prefix={<KeyOutlined />}
-                    iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                    onChange={(e) => {
-                        setPassword(e.target.value)
-                    }}
-                />
-                <IconWrapper>
-                    <Space size='middle'>
-                        <Button
-                            type="primary"
-                            loading={loading}
-                            onClick={() => handleLogin(username, password)}
-                        >
-                            Sign In
-                        </Button>
-                        <Button
-                            type="primary"
-                            onClick={() => router.push("/SignUp")}
-                        >
-                            Sign Up
-                        </Button>
-                    </Space>
-                </IconWrapper>
-            </Space> */}
             </PageWrapper>
         </>
     )

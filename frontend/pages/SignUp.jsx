@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { EyeInvisibleOutlined, EyeTwoTone, InfoCircleOutlined, UserOutlined, KeyOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/router'
 import styled from 'styled-components';
-import bcrypt from 'bcryptjs'
 // import PasswordChecklist from "react-password-checklist"
 import dynamic from 'next/dynamic';
 const PasswordChecklist = dynamic(() => import('react-password-checklist'), {
@@ -12,6 +11,7 @@ import { Form, Button, Space, Input, Tooltip } from 'antd';
 import { useUser } from '../components/hooks/useUser';
 import Title from '../components/Title';
 import axios from '../components/api';
+import Link from 'next/link';
 
 const IconWrapper = styled.div`
     /* background-color: green; */
@@ -47,15 +47,12 @@ export default function SignUp() {
 
     const handleSignUp = async (name, pwd) => {
         if (!name || !pwd) {
-            console.log("please enter username and password!")
             setStatus({
                 type: 'error',
                 msg: 'please enter username and password!'
             })
         } else {
             setLoading(true)
-            // let hashedPassword = bcrypt.hashSync(pwd)
-            // console.log(hashedPassword)
             // call API -> POST /api/user/signup
             try {
                 const { data: { status } } = await axios.post('/api/user/signup', {
@@ -68,7 +65,7 @@ export default function SignUp() {
                     type: 'success',
                     msg: 'redirect to login page'
                 })
-                router.push("/SignIn")
+                router.push("/signin")
             } catch (e) {
                 console.log(e)
                 const { data: { error } } = e.response
@@ -170,7 +167,7 @@ export default function SignUp() {
                             </Button>
                         </IconWrapper>
                     </Form.Item>
-
+                    <p>Already signed up? <Link href={"/signin"} style={{ color: "blue" }}>Sign in</Link></p>
                 </Form>
             </PageWrapper>
         </>
