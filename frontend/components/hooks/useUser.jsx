@@ -1,11 +1,13 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { message } from 'antd'
+import axios from "../api"
 
 const UserContext = createContext({
     username: "",
     password: "",
     signedIn: false,
     status: {},
+    privileged: false,
 
     setUsername: () => { },
     setPassword: () => { },
@@ -21,6 +23,7 @@ const UserProvider = (props) => {
     const [password, setPassword] = useState("")
     const [signedIn, setSignedIn] = useState(false)
     const [status, setStatus] = useState({})
+    const [privileged, setPrivileged] = useState(false)
     // const [messageApi, contextHolder] = message.useMessage()
 
     const displayStatus = (s) => {
@@ -49,9 +52,18 @@ const UserProvider = (props) => {
     }, [status])
 
     useEffect(() => {
+        const checkAdmin = async () => {
+            let { data: { status } } = await axios.get("/api/user/admin")
+            console.log("save username: " + username)
+            if (status === "privileged") {
+                setPrivileged(true)
+            } else {
+                setPrivileged(false)
+            }
+        }
         if (signedIn) {
             localStorage.setItem(LOCALSTORAGE_KEY, username)
-            console.log("save username: " + username)
+            checkAdmin()
         }
     }, [username, signedIn])
 
@@ -69,6 +81,7 @@ const UserProvider = (props) => {
                 password,
                 signedIn,
                 status,
+                privileged,
                 setUsername,
                 setPassword,
                 setSignedIn,

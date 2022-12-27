@@ -1,16 +1,13 @@
-import { Inter } from '@next/font/google'
-import { ScoreCardProvider } from '../components/hooks/useScoreCard'
-import App from '../components/Containers/App'
 import { useUser } from '../components/hooks/useUser'
 import Title from '../components/Title'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import axios from '../components/api';
+import { useEffect } from 'react'
 
-const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-    const { username, signedIn, setSignedIn } = useUser()
+    const { signedIn, privileged, setSignedIn } = useUser()
     const router = useRouter()
 
     const getFile = async () => {
@@ -18,10 +15,16 @@ export default function Home() {
         console.log(stuff)
     }
 
-
-    if (!signedIn && process.browser) {
-        router.push("/signin")
+    const handleLogout = () => {
+        setSignedIn(false)
+        axios.post('/api/user/logout')
     }
+
+    useEffect(() => {
+        if (!signedIn) {
+            router.push("/signin")
+        }
+    }, [signedIn])
 
     return (
         <>
@@ -29,7 +32,13 @@ export default function Home() {
                 <>
                     <Title title={"Hi I'm Homepage"} />
                     <button onClick={getFile}> testing</button>
-                    <Link href={"/signin"} style={{ border: "2px solid blue" }} onClick={() => setSignedIn(false)}>Log out</Link>
+                    <Link href={"/signin"} style={{ border: "2px solid blue" }} onClick={() => handleLogout()}>Log out</Link>
+                    {privileged ?
+                        <>
+                            <h1>You are administrater</h1> <br />
+                            <Link href={"/admin"}>Administrater Dashboard</Link>
+                        </>
+                        : null}
                 </>
             }
         </>

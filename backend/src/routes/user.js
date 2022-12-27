@@ -2,8 +2,15 @@ import { Router } from "express"
 import User from "../models/user"
 import { makeUserHome } from "../filesystem/directory"
 import { auth } from "../middlewares/session"
+import bcrypt from "bcryptjs"
 
 const userRouter = Router()
+
+const adminCheck = async (req) => {
+    if (!req.session.username) return false
+    const user = await User.findOne({ username: req.session.username })
+    return (user.role === "ADMIN")
+}
 
 userRouter.post("/signup", async (req, res) => {
     const { username, password } = req.body
@@ -14,8 +21,9 @@ userRouter.post("/signup", async (req, res) => {
     if (user) {
         return res.status(400).json({ error: "username exists." })
     }
-
-    const newUser = new User({ username, password })
+    let hashedPassword = bcrypt.hashSync(password)
+    let role = "USER"
+    const newUser = new User({ username, hashedPassword, role })
     if (newUser === (await newUser.save())) {
         res.status(200).json({ status: "signup succeeded." })
     } else {
@@ -35,12 +43,38 @@ userRouter.post("/login", async (req, res) => {
     if (!user) {
         return res.status(400).json({ error: "user not found." })
     }
-    if (user.password !== password) {
+    if (!bcrypt.compareSync(password, user.hashedPassword)) {
         return res.status(400).json({ error: "wrong password." })
     }
     req.session.username = username
+    console.log("session created")
     res.status(200).json({ status: "login succeeded." })
     makeUserHome(username)
+})
+
+userRouter.post('/logout', async (req, res) => {
+    req.session.destroy(() => {
+        console.log('session destroyed')
+    })
+})
+
+userRouter.get('/admin', async (req, res) => {
+    let result = await adminCheck(req)
+    if (result) {
+        res.status(200).json({ status: "privileged" })
+    } else {
+        res.status(200).json({ status: "not privileged" })
+    }
+})
+
+userRouter.get('/all', async (req, res) => {
+    let allUsers = await User.find({})
+    let users = allUsers.map((user) => {
+        delete user.hashedPassword
+        return user
+    })
+    console.log(users)
+    res.status(200).json({ users, status: "get all users succeeded" })
 })
 
 userRouter.post("/getPsps", auth, (req, res) => {
