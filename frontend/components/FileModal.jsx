@@ -36,6 +36,7 @@ const BasicModal = ({ open , onCancel, curPath, setChange}) => {
         setChange(true);
         formRef.current.value = '';
         setFile("");
+        onCancel();
       }}
     >
     <form>

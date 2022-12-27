@@ -11,7 +11,8 @@ import axios from '../components/api';
 import Button from '@material-ui/core/Button';
 import DirModal from '../components/DirModal'
 import FileModal from '../components/FileModal'
-import folder from '../pic/folderPic.png'
+import folderPic from '../pic/folderPic.png'
+import filePic from '../pic/filePic.png'
 import Image from 'next/image'
 
 
@@ -93,6 +94,11 @@ export default function Home() {
             color:white;
             cursor:pointer;
         }
+        & > .file:hover{
+            background-color:gray;
+            color:white;
+            cursor:pointer;
+        }
     `
     const DirectoryWrapper = styled.div`
         display:flex;
@@ -123,15 +129,22 @@ export default function Home() {
                             <Link href={"/SignIn"} onClick={() => setSignedIn(false)}>Log out</Link>
                         </FunctionWrapper>
                         <StorageWrapper>
-                            {dir.map((e)=>{return (
-                                <div className={"directory"} onClick={()=>{redirect(e)}} style={{display:"flex",width:"15vw",height:"6vh",border:"2px solid black",margin:"20px",alignContent:"center",borderRadius:"0.5rem"}}>
+                            {dir.map((e,idx)=>{return (
+                                <div key={idx + e} className={"directory"} onClick={()=>{redirect(e)}} style={{display:"flex",width:"15vw",height:"6vh",border:"2px solid black",margin:"20px",alignContent:"center",borderRadius:"0.5rem"}}>
                                     <div style={{width:"18%"}}>
-                                        <Image src={folder} alt="Picture of the folder" style={{height:"100%",width:"100%"}}/>
+                                        <Image src={folderPic} alt="Picture of the folder" style={{height:"100%",width:"100%"}}/>
                                     </div>
                                     <div style={{display:"flex",alignItems:"center",justifyContent:"center",flexGrow:"1"}}>{e}</div>
                                 </div>
                             )})}
-                            {file.map((e)=>{return (<div>{e}</div>)})}
+                            {file.map((e,idx)=>{return (
+                                <div key={idx + e} className={"file"} onClick={()=>{console.log(e)}} style={{display:"flex",width:"15vw",height:"6vh",border:"2px solid black",margin:"20px",alignContent:"center",borderRadius:"0.5rem"}}>
+                                    <div style={{width:"18%",display:"flex",alignItems:"center"}}>
+                                        <Image src={filePic} alt="Picture of the file" style={{height:"75%",width:"75%"}}/>
+                                    </div>
+                                    <div style={{display:"flex",alignItems:"center",justifyContent:"center",flexGrow:"1"}}>{e}</div>
+                                </div>
+                            )})}
                         </StorageWrapper>
                     </Background>
                     <DirModal open={dirModalOpen} onCancel={()=>{setDirModalOpen(false)}} onCreate={createDir} />
