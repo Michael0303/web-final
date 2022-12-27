@@ -33,8 +33,6 @@ userRouter.post("/signup", async (req, res) => {
 })
 
 userRouter.post("/login", async (req, res) => {
-    console.log("hello")
-    console.log(req.body)
     const { username, password } = req.body
     if (!username || !password) {
         return res.status(400).json({ error: "username or password is empty." })

@@ -5,11 +5,7 @@ import { listDir, makeUserDir } from "../filesystem/directory"
 const directoryRouter = Router()
 
 directoryRouter.get("/", auth, async (req, res) => {
-    console.log("hi")
     const { path = "/" } = req.query
-    // console.log("path = ")
-    // console.log(path)
-    // console.log(req)
     const { directory, error } = await listDir(req.session.username, path)
     if (error) {
         return res.status(400).json({ error })
@@ -18,7 +14,7 @@ directoryRouter.get("/", auth, async (req, res) => {
 })
 
 directoryRouter.post("/create", auth, async (req, res) => {
-    const { path } = req.query
+    const { path } = req.body
     const { error } = await makeUserDir(req.session.username, path)
     if (error) {
         return res.status(400).json({ error })
