@@ -66,9 +66,9 @@ export default function Home() {
 
 
     const FunctionWrapper = styled.span`
-        height: 100vh;
+        height: 30vh;
         width: 10%;
-        border: 2px solid blue;
+        // border: 2px solid blue;
         flex-wrap: wrap;
         display: flex;
         justify-content: center;

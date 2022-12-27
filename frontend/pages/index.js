@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import axios from '../components/api';
 import Button from '@material-ui/core/Button';
 import DirModal from '../components/DirModal'
+import FileModal from '../components/FileModal'
 import folder from '../pic/folderPic.png'
 import Image from 'next/image'
 
@@ -21,7 +22,9 @@ export default function Home() {
     const { username,signedIn,setSignedIn,status,setStatus } = useUser()
     const router = useRouter()
     const [dir,setDir] = useState([])
-    const [modalOpen,setModalOpen] = useState(false)
+    const [file,setFile] = useState([])
+    const [dirModalOpen,setDirModalOpen] = useState(false)
+    const [fileModalOpen,setFileModalOpen] = useState(false)
     const [change,setChange] = useState(false)
 
     useEffect(()=>{getDir()}, [])
@@ -29,7 +32,6 @@ export default function Home() {
     useEffect(()=>{
         if(change){
             getDir()
-            //getFile()
             setChange(false)
         }
     },[change])
@@ -37,15 +39,21 @@ export default function Home() {
     const getDir = async()=>{
         const {data:{status,directory}} = await axios.get('/api/directory',{path:'/'})
         console.log(status)
-        let tmp = []
-        for(const key in directory)
-            tmp.push(directory[key].name)
-        setDir(tmp)
+        let tmpDir = []
+        let tmpFile = []
+        for(const key in directory){
+            if(directory[key].isDirectory)
+                tmpDir.push(directory[key].name)
+            else
+                tmpFile.push(directory[key].name)
+        }
+        setDir(tmpDir)
+        setFile(tmpFile)
     }
 
     const createDir = async({name})=>{
         const {data:{status}} = await axios.post('/api/directory/create',{path:name})
-        setModalOpen(false)
+        setDirModalOpen(false)
         setChange(true)
         console.log(status)
     }
@@ -56,9 +64,9 @@ export default function Home() {
     }
 
     const FunctionWrapper = styled.span`
-        height: 100vh;
+        height: 30vh;
         width: 10%;
-        border: 2px solid blue;
+        // border: 2px solid blue;
         flex-wrap: wrap;
         display: flex;
         justify-content: center;
@@ -91,9 +99,9 @@ export default function Home() {
         width:15vw;
         height:6vh;
         border:2px solid black;
-        margin:20px'
-        alignContent:center;
-        borderRadius:0.5rem;
+        margin:20px;
+        align-content:center;
+        border-radius:0.5rem;
     `
     const redirect = (e)=>{
         let hash = "";
@@ -110,8 +118,8 @@ export default function Home() {
                     <Title title={username + "'s Cloud"} />
                     <Background>
                         <FunctionWrapper>
-                            <Button onClick={getDir}> testing</Button>
-                            <Button onClick={()=>{setModalOpen(true)}}> create directory </Button>
+                            <Button onClick={()=>{setFileModalOpen(true)}}> Upload File</Button>
+                            <Button onClick={()=>{setDirModalOpen(true)}}> Create Directory </Button>
                             <Link href={"/SignIn"} onClick={() => setSignedIn(false)}>Log out</Link>
                         </FunctionWrapper>
                         <StorageWrapper>
@@ -123,9 +131,11 @@ export default function Home() {
                                     <div style={{display:"flex",alignItems:"center",justifyContent:"center",flexGrow:"1"}}>{e}</div>
                                 </div>
                             )})}
+                            {file.map((e)=>{return (<div>{e}</div>)})}
                         </StorageWrapper>
                     </Background>
-                    <DirModal open={modalOpen} onCancel={()=>{setModalOpen(false)}} onCreate={createDir} />
+                    <DirModal open={dirModalOpen} onCancel={()=>{setDirModalOpen(false)}} onCreate={createDir} />
+                    <FileModal open={fileModalOpen} onCancel={()=>{setFileModalOpen(false)}} curPath={"/"} setChange={setChange} />
                     
                 </>
             }
