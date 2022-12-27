@@ -11,7 +11,7 @@ import DirModal from '../../components/DirModal'
 import FileModal from '../../components/FileModal'
 import folderPic from '../../pic/folderPic.png'
 import filePic from '../../pic/filePic.png'
-
+import FileDownload from 'js-file-download'
 import Image from 'next/image'
 
 
@@ -120,6 +120,18 @@ export default function Home() {
             hash = window.btoa(curPath + "/" + e);
         router.push("/directory/" + hash)
     }
+
+    const downloadFile = async(e)=>{
+        axios({
+            url:'/api/file/',
+            method:'GET',
+            params:{path:curPath + "/" + e},
+            responseType:'blob'
+        }).then((res)=>{
+            console.log(res.data)
+            FileDownload(res.data,e)
+        }).catch((error) => { console.error(error) })
+    }
     
     return (
         <>
@@ -142,7 +154,7 @@ export default function Home() {
                                 </div>
                             )})}
                             {file.map((e,idx)=>{return (
-                                <div key={idx + e} className={"file"} onClick={()=>{console.log(e)}} style={{display:"flex",width:"15vw",height:"6vh",border:"2px solid black",margin:"20px",alignContent:"center",borderRadius:"0.5rem"}}>
+                                <div key={idx + e} className={"file"} onClick={()=>{downloadFile(e)}} style={{display:"flex",width:"15vw",height:"6vh",border:"2px solid black",margin:"20px",alignContent:"center",borderRadius:"0.5rem"}}>
                                     <div style={{width:"18%",display:"flex",alignItems:"center"}}>
                                         <Image src={filePic} alt="Picture of the file" style={{height:"75%",width:"75%"}}/>
                                     </div>
