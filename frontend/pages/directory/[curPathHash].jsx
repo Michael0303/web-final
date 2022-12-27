@@ -1,16 +1,14 @@
 import { Inter } from '@next/font/google'
-import { ScoreCardProvider } from '../components/hooks/useScoreCard'
-import App from '../components/Containers/App'
-import { useUser } from '../components/hooks/useUser'
-import Title from '../components/Title'
+import { useUser } from '../../components/hooks/useUser'
+import Title from '../../components/Title'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useEffect,useState } from 'react'
 import styled from 'styled-components';
-import axios from '../components/api';
+import axios from '../../components/api';
 import Button from '@material-ui/core/Button';
-import DirModal from '../components/DirModal'
-import folder from '../pic/folderPic.png'
+import DirModal from '../../components/DirModal'
+import folder from '../../pic/folderPic.png'
 import Image from 'next/image'
 
 
@@ -24,18 +22,34 @@ export default function Home() {
     const [modalOpen,setModalOpen] = useState(false)
     const [change,setChange] = useState(false)
 
-    useEffect(()=>{getDir()}, [])
+    const {curPathHash} = router.query;
+
+    if (!signedIn && process.browser) {
+        router.push("/SignIn")
+    }
+
+
+    let curPath = "";
+    if(typeof window !== 'undefined' && signedIn)
+            curPath = window.atob(curPathHash);
+
+    useEffect(()=>{
+        // if(typeof window !== 'undefined')
+        //     curPath = window.atob(curPathHash);
+        if(signedIn)
+            getDir(curPath);
+    },[curPathHash])
     
     useEffect(()=>{
         if(change){
-            getDir()
+            getDir(curPath)
             //getFile()
             setChange(false)
         }
     },[change])
     
-    const getDir = async()=>{
-        const {data:{status,directory}} = await axios.get('/api/directory',{path:'/'})
+    const getDir = async(dirName)=>{
+        const {data:{status,directory}} = await axios.get('/api/directory', {params:{path: dirName}})
         console.log(status)
         let tmp = []
         for(const key in directory)
@@ -44,16 +58,12 @@ export default function Home() {
     }
 
     const createDir = async({name})=>{
-        const {data:{status}} = await axios.post('/api/directory/create',{path:name})
+        const {data:{status}} = await axios.post('/api/directory/create',{path:curPath+ "/" + name})
         setModalOpen(false)
         setChange(true)
         console.log(status)
     }
 
-
-    if (!signedIn && process.browser) {
-        router.push("/SignIn")
-    }
 
     const FunctionWrapper = styled.span`
         height: 100vh;
@@ -86,22 +96,14 @@ export default function Home() {
             cursor:pointer;
         }
     `
-    const DirectoryWrapper = styled.div`
-        display:flex;
-        width:15vw;
-        height:6vh;
-        border:2px solid black;
-        margin:20px'
-        alignContent:center;
-        borderRadius:0.5rem;
-    `
+    console.log(curPath)
+
     const redirect = (e)=>{
         let hash = "";
         if(typeof window !== 'undefined')
-            hash = window.btoa(e);
+            hash = window.btoa(curPath + "/" + e);
         router.push("/directory/" + hash)
     }
-    
     
     return (
         <>
@@ -116,7 +118,7 @@ export default function Home() {
                         </FunctionWrapper>
                         <StorageWrapper>
                             {dir.map((e)=>{return (
-                                <div className={"directory"} onClick={()=>{redirect(e)}} style={{display:"flex",width:"15vw",height:"6vh",border:"2px solid black",margin:"20px",alignContent:"center",borderRadius:"0.5rem"}}>
+                                <div onClick={()=>{redirect(e)}} className={"directory"}  style={{display:"flex",width:"15vw",height:"6vh",border:"2px solid black",margin:"20px",alignContent:"center",borderRadius:"0.5rem"}}>
                                     <div style={{width:"18%"}}>
                                         <Image src={folder} alt="Picture of the folder" style={{height:"100%",width:"100%"}}/>
                                     </div>
@@ -126,7 +128,6 @@ export default function Home() {
                         </StorageWrapper>
                     </Background>
                     <DirModal open={modalOpen} onCancel={()=>{setModalOpen(false)}} onCreate={createDir} />
-                    
                 </>
             }
         </>

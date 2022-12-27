@@ -11,7 +11,6 @@ const useSession = () =>
     })
 
 const auth = (req, res, next) => {
-    console.log(req.session.id)
     if (req.session.username) {
         next()
     } else {
