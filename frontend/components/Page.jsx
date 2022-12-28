@@ -16,12 +16,22 @@ import FileDownload from 'js-file-download'
 const FunctionWrapper = styled.span`
     height: 30vh;
     width: 10%;
-    /* border: 2px solid blue; */
-    flex-wrap: wrap;
+    border: 2px solid blue;
     display: flex;
+    /* flex-wrap: wrap; */
+    flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     & > Button{
+        height: 5vh;
+        margin:0px;
+    }
+    & > a{
+        display: flex;
+        align-items: center;
+        color: black;
+        /* background-color: gainsboro; */
+        height: 5vh;
         margin:0px;
     }
 `
@@ -63,7 +73,6 @@ export default function Page() {
     const [change, setChange] = useState(false)
 
     const { curPathHash } = router.query;
-    console.log(curPathHash)
     let curPath = "/";
     if (typeof window !== 'undefined' && signedIn) {
         if (curPathHash) {
@@ -94,7 +103,6 @@ export default function Page() {
 
     const getDir = async (dirName) => {
         const { data: { status, directory } } = await axios.get('/api/directory', { params: { path: dirName } })
-        console.log(status)
         let tmpDir = []
         let tmpFile = []
         for (const key in directory) {
@@ -111,7 +119,6 @@ export default function Page() {
         const { data: { status } } = await axios.post('/api/directory/create', { path: curPath + "/" + name })
         setDirModalOpen(false)
         setChange(true)
-        console.log(status)
     }
 
     const handleLogout = () => {
@@ -152,9 +159,9 @@ export default function Page() {
                             {privileged ? <Link href={"/admin"}>Dashboard</Link> : null}
                         </FunctionWrapper>
                         <StorageWrapper>
-                            {dir.map((e) => {
+                            {dir.map((e, idx) => {
                                 return (
-                                    <div onClick={() => { redirect(e) }} className={"directory"} style={{ display: "flex", width: "15vw", height: "6vh", border: "2px solid black", margin: "20px", alignContent: "center", borderRadius: "0.5rem" }}>
+                                    <div key={idx + e} onClick={() => { redirect(e) }} className={"directory"} style={{ display: "flex", width: "15vw", height: "6vh", border: "2px solid black", margin: "20px", alignContent: "center", borderRadius: "0.5rem" }}>
                                         <div style={{ width: "18%" }}>
                                             <Image src={folderPic} alt="Picture of the folder" style={{ height: "100%", width: "100%" }} />
                                         </div>

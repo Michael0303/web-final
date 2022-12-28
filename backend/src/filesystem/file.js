@@ -15,7 +15,6 @@ const checkFile = async (username, filePath) => {
         if (stat.isDirectory()) return { error: "path is directory." }
         return { userFilePath }
     } catch (err) {
-        console.log(err)
         switch (err.code) {
             case "ENOENT":
                 return { error: "no such file." }

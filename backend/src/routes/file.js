@@ -15,6 +15,7 @@ fileRouter.get("/", auth, async (req, res) => {
 })
 
 fileRouter.post("/upload", auth, upload.single("file"), async (req, res) => {
+    console.log("get upload request")
     const { file } = req
     const { path = "/" } = req.query
     const { error } = await writeFile(req.session.username, path, file)

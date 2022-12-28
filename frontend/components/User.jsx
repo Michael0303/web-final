@@ -13,7 +13,6 @@ const UserWrapper = styled.div`
 `
 
 export default function User({ user }) {
-    // console.log(user)
     const { username, role, usage } = user
     return (
         <UserWrapper>

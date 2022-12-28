@@ -71,7 +71,6 @@ userRouter.get('/all', async (req, res) => {
         delete user.hashedPassword
         return user
     })
-    console.log(users)
     res.status(200).json({ users, status: "get all users succeeded" })
 })
 

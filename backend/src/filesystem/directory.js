@@ -29,14 +29,17 @@ const makeUserHome = (username) => {
 
 const makeUserDir = async (username, dirPath) => {
     const directoryPath = path.join(home_path, username, dirPath)
+    console.log(directoryPath)
     if (!isLegal(username, directoryPath)) {
         console.log("invalid path.", relativePath)
         return { error: "invalid path." }
     }
     try {
-        await fs.promises.mkdir(directoryPath, {
+        const createdDir = await fs.promises.mkdir(directoryPath, {
             recursive: true,
         })
+        console.log("created")
+        console.log(createdDir)
         return {}
     } catch (err) {
         if (err.code === "EEXIST") return { error: "directory exists." }

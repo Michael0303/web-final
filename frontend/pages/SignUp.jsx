@@ -59,15 +59,12 @@ export default function SignUp() {
                     username: name,
                     password: pwd
                 })
-                console.log(status)
-                console.log("go to login page")
                 setStatus({
                     type: 'success',
                     msg: 'redirect to login page'
                 })
                 router.push("/signin")
             } catch (e) {
-                console.log(e)
                 const { data: { error } } = e.response
                 setStatus({
                     type: 'error',
