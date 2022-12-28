@@ -1,8 +1,7 @@
-import Page from "../../components/Page";
+import Page from "../../components/Page"
 
-export default function Home() {
+export default function () {
     return (
         <Page />
     )
 }
-
