@@ -47,7 +47,7 @@ export default function SignIn() {
                     msg: 'redirect to your homepage'
                 })
                 setSignedIn(true)
-                router.push("/")
+                router.replace("/")
             } catch (e) {
                 const { data: { error } } = e.response
                 setStatus({

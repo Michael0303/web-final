@@ -16,23 +16,28 @@ import FileDownload from 'js-file-download'
 const FunctionWrapper = styled.span`
     height: 30vh;
     width: 10%;
-    border: 2px solid blue;
+    /* border: 2px solid blue; */
     display: flex;
     /* flex-wrap: wrap; */
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     & > Button{
-        height: 5vh;
+        height: 7vh;
+        width: 10vw;
         margin:0px;
+        /* border: 0.1vmin solid white; */
+        box-shadow: inset 0px 0px 0px 0.2vmin white;
     }
     & > a{
+        height: 7vh;
+        width: 10vw;
+        margin:0px;
         display: flex;
         align-items: center;
+        justify-content: center;
         color: black;
-        /* background-color: gainsboro; */
-        height: 5vh;
-        margin:0px;
+        box-shadow: inset 0px 0px 0px 0.2vmin white;
     }
 `
 
@@ -40,17 +45,35 @@ const Background = styled.div`
     height: 70vh;
     background-color: pink;
     display:flex;
+    flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
 `
+const MainWrapper = styled.div`
+    height: 70vh;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+`
+
+const PathWrapper = styled.h1`
+    /* background-color: green; */
+    height: 7vh;
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 1vw;
+    align-items: center;
+`
 
 const StorageWrapper = styled.span`
+    /* background-color: purple; */
+    height:63vh;
     display:flex;
-    height:70vh;
-    width:90%;
     flex-wrap: wrap;
     justify-content:flex-start;
     align-content:flex-start;
+    border-radius: 1vw;
+    box-shadow: inset 0px 0px 0px 0.2vmin white;
     & > .directory:hover{
         background-color:gray;
         color:white;
@@ -73,7 +96,7 @@ export default function Page() {
     const [change, setChange] = useState(false)
 
     const { curPathHash } = router.query;
-    let curPath = "/";
+    let curPath = "";
     if (typeof window !== 'undefined' && signedIn) {
         if (curPathHash) {
             curPath = window.atob(curPathHash);
@@ -153,33 +176,37 @@ export default function Page() {
                     <Title title={username + "'s Cloud"} />
                     <Background>
                         <FunctionWrapper>
+                            <Button disabled={!curPath} onClick={() => { router.back() }}>Back</Button>
                             <Button onClick={() => { setFileModalOpen(true) }}> Upload File</Button>
                             <Button onClick={() => { setDirModalOpen(true) }}> create directory </Button>
                             <Link href={"/signin"} onClick={() => handleLogout()}>Log out</Link>
                             {privileged ? <Link href={"/admin"}>Dashboard</Link> : null}
                         </FunctionWrapper>
-                        <StorageWrapper>
-                            {dir.map((e, idx) => {
-                                return (
-                                    <div key={idx + e} onClick={() => { redirect(e) }} className={"directory"} style={{ display: "flex", width: "15vw", height: "6vh", border: "2px solid black", margin: "20px", alignContent: "center", borderRadius: "0.5rem" }}>
-                                        <div style={{ width: "18%" }}>
-                                            <Image src={folderPic} alt="Picture of the folder" style={{ height: "100%", width: "100%" }} />
+                        <MainWrapper>
+                            <PathWrapper>{`Current Working Directory: ` + (curPath ? curPath : "/")}</PathWrapper>
+                            <StorageWrapper>
+                                {dir.map((e, idx) => {
+                                    return (
+                                        <div key={idx + e} onClick={() => { redirect(e) }} className={"directory"} style={{ display: "flex", width: "15vw", height: "6vh", border: "2px solid black", margin: "20px", alignContent: "center", borderRadius: "0.5rem" }}>
+                                            <div style={{ width: "18%" }}>
+                                                <Image src={folderPic} alt="Picture of the folder" style={{ height: "100%", width: "100%" }} />
+                                            </div>
+                                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexGrow: "1" }}>{e}</div>
                                         </div>
-                                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexGrow: "1" }}>{e}</div>
-                                    </div>
-                                )
-                            })}
-                            {file.map((e, idx) => {
-                                return (
-                                    <div key={idx + e} className={"file"} onClick={() => { downloadFile(e) }} style={{ display: "flex", width: "15vw", height: "6vh", border: "2px solid black", margin: "20px", alignContent: "center", borderRadius: "0.5rem" }}>
-                                        <div style={{ width: "18%", display: "flex", alignItems: "center" }}>
-                                            <Image src={filePic} alt="Picture of the file" style={{ height: "75%", width: "75%" }} />
+                                    )
+                                })}
+                                {file.map((e, idx) => {
+                                    return (
+                                        <div key={idx + e} className={"file"} onClick={() => { downloadFile(e) }} style={{ display: "flex", width: "15vw", height: "6vh", border: "2px solid black", margin: "20px", alignContent: "center", borderRadius: "0.5rem" }}>
+                                            <div style={{ width: "18%", display: "flex", alignItems: "center" }}>
+                                                <Image src={filePic} alt="Picture of the file" style={{ height: "75%", width: "75%" }} />
+                                            </div>
+                                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexGrow: "1" }}>{e}</div>
                                         </div>
-                                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexGrow: "1" }}>{e}</div>
-                                    </div>
-                                )
-                            })}
-                        </StorageWrapper>
+                                    )
+                                })}
+                            </StorageWrapper>
+                        </MainWrapper>
                     </Background>
                     <DirModal open={DirmodalOpen} onCancel={() => { setDirModalOpen(false) }} onCreate={createDir} />
                     <FileModal open={fileModalOpen} onCancel={() => { setFileModalOpen(false) }} curPath={curPath} setChange={setChange} />
