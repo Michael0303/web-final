@@ -1,6 +1,6 @@
 import { Router } from "express"
 import User from "../models/user"
-import { makeUserHome } from "../filesystem/directory"
+import { userDirSize, makeUserHome } from "../filesystem/directory"
 import { auth } from "../middlewares/session"
 import bcrypt from "bcryptjs"
 
@@ -63,6 +63,27 @@ userRouter.get('/admin', async (req, res) => {
     } else {
         res.status(200).json({ status: "not privileged" })
     }
+})
+
+userRouter.post('/usage_refresh', async (req, res) => {
+    let allUsers = await User.find({})
+    let err = false
+    let updateUsers = await Promise.all(allUsers.map(async (user) => {
+        user.usage = await userDirSize(user.username)
+        // console.log(`update ${user.username}'s usage to ${user.usage}`)
+        try {
+            await user.save()
+        } catch (e) {
+            console.log(e)
+            err = true
+        }
+        return user
+    }))
+    console.log(updateUsers)
+    if (err)
+        res.status(400).json({ error: "usage refresh error" })
+    else
+        res.status(200).json({ status: "usage refresh succeeded" })
 })
 
 userRouter.get('/all', async (req, res) => {

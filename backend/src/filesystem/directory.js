@@ -71,6 +71,40 @@ const listDir = async (username, dirPath) => {
     }
 }
 
+// ref: https://stackoverflow.com/questions/30448002/how-to-get-directory-size-in-node-js-without-recursively-going-through-directory
+const dirSize = async (dir) => {
+    // const dir = path.join(home_path, username)
+    // const relativePath = path.relative(home_path, dir)
+    // if (!isLegal(username, dir)) {
+    //     console.log("invalid path.", relativePath)
+    //     return { error: "invalid path." }
+    // }
+
+    const files = await fs.promises.readdir(dir, { withFileTypes: true });
+    const paths = files.map(async file => {
+        const _path = path.join(dir, file.name);
+
+        if (file.isDirectory()) {
+            return await dirSize(_path);
+        }
+
+        if (file.isFile()) {
+            const { size } = await fs.promises.stat(_path);
+
+            return size;
+        }
+
+        return 0;
+    });
+
+    return (await Promise.all(paths)).flat(Infinity).reduce((i, size) => i + size, 0);
+}
+
+const userDirSize = async (username) => {
+    const dir = path.join(home_path, username)
+    return await dirSize(dir)
+}
+
 makeDir(home_path) //make home directory
 
-export { makeUserHome, listDir, makeUserDir }
+export { makeUserHome, listDir, makeUserDir, userDirSize }

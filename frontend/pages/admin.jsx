@@ -2,6 +2,7 @@ import axios from "../components/api"
 import Title from "../components/Title"
 import User from "../components/User"
 import styled from "styled-components"
+import { Button } from "antd"
 import { useEffect } from "react"
 import { useUser } from "../components/hooks/useUser"
 
@@ -16,11 +17,23 @@ const UsersBox = styled.div`
 
 export default function admin({ users }) {
     const { privileged } = useUser()
+
+    const handleTest = async () => {
+        try {
+            let { data: { status } } = await axios.post("/api/user/usage_refresh")
+            console.log(status)
+        } catch (e) {
+            const { data: { error } } = e.response
+            console.log(error)
+        }
+    }
+
     return (
         <>
             {privileged ?
                 <>
                     <Title title={"Administrater DashBoard"} />
+                    <Button onClick={() => handleTest()} >Test</Button>
                     <UsersBox>
                         {users.map((user, index) => <User key={index + "-" + user.username} user={user} />)}
                     </UsersBox>
