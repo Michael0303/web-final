@@ -3,12 +3,15 @@ import Title from "../components/Title"
 import User from "../components/User"
 import styled from "styled-components"
 import { Button } from "antd"
-import { useEffect } from "react"
+import Link from "next/link"
 import { useUser } from "../components/hooks/useUser"
+import Function from "../components/Function"
+import Logout from "../components/Logout"
+import Background from "../components/Background"
 
 const UsersBox = styled.div`
-    width: 100vw;
     height: 70vh;
+    width: 90%;
     background-color: pink;
     display: flex;
     align-items: flex-start;
@@ -33,10 +36,16 @@ export default function admin({ users }) {
             {privileged ?
                 <>
                     <Title title={"Administrater DashBoard"} />
-                    <Button onClick={() => handleTest()} >Test</Button>
-                    <UsersBox>
-                        {users.map((user, index) => <User key={index + "-" + user.username} user={user} />)}
-                    </UsersBox>
+                    <Background>
+                        <Function>
+                            <Button onClick={() => handleTest()} >Test</Button>
+                            <Link href={"/"}>Home</Link>
+                            <Logout />
+                        </Function>
+                        <UsersBox>
+                            {users.map((user, index) => <User key={index + "-" + user.username} user={user} />)}
+                        </UsersBox>
+                    </Background>
                 </>
                 : <Title title={"You are not administrater!"} />
             }

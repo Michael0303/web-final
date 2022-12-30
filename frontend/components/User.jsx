@@ -18,7 +18,7 @@ export default function User({ user }) {
         <UserWrapper>
             <p>{username}</p>
             <p>{role}</p>
-            <p>Usage: {usage}</p>
+            <p>Usage: {usage / 1000000} MB</p>
         </UserWrapper>
     )
 }

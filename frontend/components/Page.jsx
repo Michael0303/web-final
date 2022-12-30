@@ -12,43 +12,10 @@ import folderPic from '../pic/folderPic.png'
 import filePic from '../pic/filePic.png'
 import Image from 'next/image'
 import FileDownload from 'js-file-download'
+import Function from './Function'
+import Logout from './Logout'
+import Background from './Background'
 
-const FunctionWrapper = styled.span`
-    height: 30vh;
-    width: 10%;
-    /* border: 2px solid blue; */
-    display: flex;
-    /* flex-wrap: wrap; */
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    & > Button{
-        height: 7vh;
-        width: 10vw;
-        margin:0px;
-        /* border: 0.1vmin solid white; */
-        box-shadow: inset 0px 0px 0px 0.2vmin white;
-    }
-    & > a{
-        height: 7vh;
-        width: 10vw;
-        margin:0px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: black;
-        box-shadow: inset 0px 0px 0px 0.2vmin white;
-    }
-`
-
-const Background = styled.div`
-    height: 70vh;
-    background-color: pink;
-    display:flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-`
 const MainWrapper = styled.div`
     height: 70vh;
     width: 90%;
@@ -61,8 +28,15 @@ const PathWrapper = styled.h1`
     height: 7vh;
     display: flex;
     justify-content: flex-start;
-    padding-left: 1vw;
+    /* padding-left: 1vw; */
     align-items: center;
+    & > Button{
+        height: 7vh;
+        width: 10vw;
+        margin:0px;
+        /* border: 0.1vmin solid white; */
+        box-shadow: inset 0px 0px 0px 0.2vmin white;
+    }
 `
 
 const StorageWrapper = styled.span`
@@ -144,10 +118,7 @@ export default function Page() {
         setChange(true)
     }
 
-    const handleLogout = () => {
-        setSignedIn(false)
-        axios.post('/api/user/logout')
-    }
+
 
 
     const redirect = (e) => {
@@ -175,15 +146,17 @@ export default function Page() {
                 <>
                     <Title title={username + "'s Cloud"} />
                     <Background>
-                        <FunctionWrapper>
-                            <Button disabled={!curPath} onClick={() => { router.back() }}>Back</Button>
+                        <Function>
                             <Button onClick={() => { setFileModalOpen(true) }}> Upload File</Button>
                             <Button onClick={() => { setDirModalOpen(true) }}> create directory </Button>
-                            <Link href={"/signin"} onClick={() => handleLogout()}>Log out</Link>
+                            <Logout />
                             {privileged ? <Link href={"/admin"}>Dashboard</Link> : null}
-                        </FunctionWrapper>
+                        </Function>
                         <MainWrapper>
-                            <PathWrapper>{`Current Working Directory: ` + (curPath ? curPath : "/")}</PathWrapper>
+                            <PathWrapper>
+                                <Button disabled={!curPath} onClick={() => { router.back() }}>Back</Button>
+                                {`Now at: ` + (curPath ? curPath : "/")}
+                            </PathWrapper>
                             <StorageWrapper>
                                 {dir.map((e, idx) => {
                                     return (
