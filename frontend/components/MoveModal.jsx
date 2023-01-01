@@ -1,6 +1,7 @@
 import { Modal, Form, Input } from "antd";
+import axios from './api';
 
-const MoveModal = ({ open, onCreate, onCancel,target,dst,curPath }) => {
+const MoveModal = ({ open,onCancel,target,dst,curPath }) => {
 
   return (
     <Modal
@@ -9,7 +10,7 @@ const MoveModal = ({ open, onCreate, onCancel,target,dst,curPath }) => {
       okText="Confirm"
       cancelText="Cancel"
       onCancel={onCancel}
-      onOk={() => {
+      onOk={async() => {
         
       }}
     >
