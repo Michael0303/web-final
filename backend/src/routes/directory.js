@@ -1,7 +1,10 @@
 import { Router } from "express"
 import { auth } from "../middlewares/session"
-import { listDir, makeUserDir } from "../filesystem/directory"
-
+import { listDir, makeUserDir, checkDir } from "../filesystem/directory"
+import { zip } from 'zip-a-folder';
+import fs from "fs"
+import path from "path";
+const zipPath = path.join(__dirname, "../../home/", "download.zip")
 const directoryRouter = Router()
 
 directoryRouter.get("/", auth, async (req, res) => {
@@ -21,5 +24,18 @@ directoryRouter.post("/create", auth, async (req, res) => {
     }
     res.status(200).json({ status: "directory creation succeeded." })
 })
+
+directoryRouter.get("/download", auth, async (req, res) => {
+    const { path = "/" } = req.query
+    const { userDirPath, error } = await checkDir(req.session.username, path)
+    if (error) {
+        return res.status(400).json({ error })
+    }
+    console.log("zipping dir: " + userDirPath)
+    await zip(userDirPath, zipPath)
+    res.status(200).sendFile(zipPath)
+    // fs.unlink(zipPath)
+})
+
 
 export default directoryRouter

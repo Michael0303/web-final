@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Divider } from 'antd'
+import { Divider, Space, Tag } from 'antd'
 
 const Wrapper = styled.div`
-    height: 30vh;
+    height: 25vh;
     background-color: pink;
     display: flex;
     flex-direction: column;
@@ -16,11 +16,18 @@ const Wrapper = styled.div`
     }
 `
 
-export default function Title({ title }) {
+export default function Title({ title, user }) {
     return (
         <Wrapper>
             <h1>{title}</h1>
             <Divider style={{ backgroundColor: "white" }} />
+            {user ?
+                <Space>
+                    <Tag>{user.username}</Tag>
+                    <Tag>{user.role}</Tag>
+                    <Tag>{user.usage / 1000000} MB</Tag>
+                </Space>
+                : null}
         </Wrapper>
     )
 }

@@ -1,7 +1,7 @@
 import styled from "styled-components"
 
 const BackgroundWrapper = styled.div`
-    height: 70vh;
+    height: 75vh;
     background-color: pink;
     display:flex;
     flex-wrap: wrap;

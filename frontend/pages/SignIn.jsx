@@ -9,7 +9,7 @@ import Title from '../components/Title';
 
 
 const PageWrapper = styled.div`
-    height: 70vh;
+    height: 75vh;
     background-color: pink;
     display: flex;
     /* align-items: center; */
@@ -24,7 +24,7 @@ const IconWrapper = styled.div`
 `
 
 export default function SignIn() {
-    const { username, password, setUsername, setPassword, setSignedIn, setStatus } = useUser()
+    const { username, password, setUsername, setPassword, setSignedIn, setStatus, setUser } = useUser()
     const [loading, setLoading] = useState(false)
     const router = useRouter()
 
@@ -38,7 +38,7 @@ export default function SignIn() {
             setLoading(true)
             // call API -> POST /api/user/login 
             try {
-                const { data: { status } } = await axios.post('/api/user/login', {
+                const { data: { user, status } } = await axios.post('/api/user/login', {
                     username: name,
                     password: pwd
                 })
@@ -46,6 +46,7 @@ export default function SignIn() {
                     type: 'success',
                     msg: 'redirect to your homepage'
                 })
+                setUser(user)
                 setSignedIn(true)
                 router.replace("/")
             } catch (e) {

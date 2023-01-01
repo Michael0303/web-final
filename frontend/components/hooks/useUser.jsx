@@ -8,12 +8,14 @@ const UserContext = createContext({
     signedIn: false,
     status: {},
     privileged: false,
+    user: undefined,
 
     setUsername: () => { },
     setPassword: () => { },
     setSignedIn: () => { },
     setStatus: () => { },
     displayStatus: () => { },
+    setUser: () => { },
 })
 
 const LOCALSTORAGE_KEY = 'save-user'
@@ -24,6 +26,7 @@ const UserProvider = (props) => {
     const [signedIn, setSignedIn] = useState(false)
     const [status, setStatus] = useState({})
     const [privileged, setPrivileged] = useState(false)
+    const [user, setUser] = useState(undefined)
     // const [messageApi, contextHolder] = message.useMessage()
 
     const displayStatus = (s) => {
@@ -82,11 +85,13 @@ const UserProvider = (props) => {
                 signedIn,
                 status,
                 privileged,
+                user,
                 setUsername,
                 setPassword,
                 setSignedIn,
                 setStatus,
-                displayStatus
+                displayStatus,
+                setUser,
             }}
             {...props}
         />

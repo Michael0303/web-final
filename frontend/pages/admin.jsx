@@ -11,7 +11,8 @@ import Background from "../components/Background"
 
 const UsersBox = styled.div`
     height: 70vh;
-    width: 90%;
+    width: auto;
+    min-width: 80vw;
     background-color: pink;
     display: flex;
     align-items: flex-start;
@@ -38,8 +39,8 @@ export default function admin({ users }) {
                     <Title title={"Administrater DashBoard"} />
                     <Background>
                         <Function>
-                            <Button onClick={() => handleTest()} >Test</Button>
-                            <Link href={"/"}>Home</Link>
+                            <Button onClick={() => handleTest()} >Usage Refresh</Button>
+                            <Button><Link href={"/"}>Home</Link></Button>
                             <Logout />
                         </Function>
                         <UsersBox>

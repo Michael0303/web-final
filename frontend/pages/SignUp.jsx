@@ -27,7 +27,7 @@ const ListWrapper = styled.div`
     }
 `
 const PageWrapper = styled.div`
-    height: 70vh;
+    height: 75vh;
     background-color: pink;
     display: flex;
     /* align-items: center; */

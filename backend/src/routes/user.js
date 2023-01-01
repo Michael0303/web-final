@@ -12,6 +12,27 @@ const adminCheck = async (req) => {
     return (user.role === "ADMIN")
 }
 
+const usageUpdate = async () => {
+    let allUsers = await User.find({})
+    let err = false
+    let updateUsers = await Promise.all(allUsers.map(async (user) => {
+        user.usage = await userDirSize(user.username)
+        // console.log(`update ${user.username}'s usage to ${user.usage}`)
+        try {
+            await user.save()
+        } catch (e) {
+            console.log(e)
+            err = true
+        }
+        return user
+    }))
+
+    return {
+        users: updateUsers,
+        error: err ? "update fail" : undefined
+    }
+}
+
 userRouter.post("/signup", async (req, res) => {
     const { username, password } = req.body
     if (!username || !password) {
@@ -46,7 +67,8 @@ userRouter.post("/login", async (req, res) => {
     }
     req.session.username = username
     console.log("session created")
-    res.status(200).json({ status: "login succeeded." })
+    delete user.hashedPassword
+    res.status(200).json({ user, status: "login succeeded." })
     makeUserHome(username)
 })
 
@@ -66,33 +88,24 @@ userRouter.get('/admin', async (req, res) => {
 })
 
 userRouter.post('/usage_refresh', async (req, res) => {
-    let allUsers = await User.find({})
-    let err = false
-    let updateUsers = await Promise.all(allUsers.map(async (user) => {
-        user.usage = await userDirSize(user.username)
-        // console.log(`update ${user.username}'s usage to ${user.usage}`)
-        try {
-            await user.save()
-        } catch (e) {
-            console.log(e)
-            err = true
-        }
-        return user
-    }))
-    console.log(updateUsers)
-    if (err)
+    let { error } = await usageUpdate()
+    if (error)
         res.status(400).json({ error: "usage refresh error" })
     else
         res.status(200).json({ status: "usage refresh succeeded" })
 })
 
 userRouter.get('/all', async (req, res) => {
-    let allUsers = await User.find({})
-    let users = allUsers.map((user) => {
-        delete user.hashedPassword
-        return user
-    })
-    res.status(200).json({ users, status: "get all users succeeded" })
+    let { users, error } = await usageUpdate()
+    if (error) {
+        res.status(400).json({ error: "usage refresh error" })
+    } else {
+        users = users.map((user) => {
+            delete user.hashedPassword
+            return user
+        })
+        res.status(200).json({ users, status: "get all users succeeded" })
+    }
 })
 
 userRouter.post("/getPsps", auth, (req, res) => {
