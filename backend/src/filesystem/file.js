@@ -46,4 +46,24 @@ const writeFile = async (username, folderPath, multerFile) => {
     }
 }
 
-export { checkFile, writeFile }
+const deleteFile = async(username,filePath)=>{
+    const userFilePath = path.join(home_path, username, filePath)
+    const relativePath = path.relative(home_path, userFilePath)
+    if (!relativePath.startsWith(username)) {
+        console.log("invalid path.", relativePath)
+        return { error: "invalid path." }
+    }
+    try{
+        await fs.promises.rm(userFilePath)
+        return {}
+    }catch(err){
+        switch (err.code) {
+            case "ENOENT":
+                return { error: "no such file." }
+            default:
+                throw err
+        }
+    }
+}
+
+export { checkFile, writeFile, deleteFile }

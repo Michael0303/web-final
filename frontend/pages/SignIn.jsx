@@ -50,10 +50,10 @@ export default function SignIn() {
                 setSignedIn(true)
                 router.replace("/")
             } catch (e) {
-                const { data: { error } } = e.response
+                // const { data: { error } } = e.response
                 setStatus({
                     type: 'error',
-                    msg: error
+                    msg: 'error occur'
                 })
                 setLoading(false)
             }

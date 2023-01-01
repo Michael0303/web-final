@@ -30,9 +30,9 @@ const BasicModal = ({ open, onCreate, onCancel }) => {
               message: "Error: Please enter the name of the directory!",
             }, {
               validator: (_, value) =>
-                (value && typeof value === 'string' && !value.includes('/'))
+                (value && typeof value === 'string' && !value.includes('/')  && !value.includes('.'))
                   ? Promise.resolve()
-                  : Promise.reject(new Error('Error: Unvalid input, please enter the directory name without "/" ')),
+                  : Promise.reject(new Error('Error: Unvalid input, please enter the directory name without "/" and "." ')),
             },
           ]}
         >
