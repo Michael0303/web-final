@@ -32,12 +32,18 @@ const PathWrapper = styled(Space)`
     justify-content: flex-start;
     /* padding-left: 1vw; */
     align-items: flex-start;
-    & > h1 {
-        display: flex;
-        align-items: center;
-        margin:0px;
-        /* border: 0.1vmin solid white; */
-        box-shadow: inset 0px 0px 0px 0.2vmin white;
+    
+`
+const Tag = styled.h1`
+    display: flex;
+    align-items: center;
+    margin:0px;
+    /* border: 0.1vmin solid white; */
+    &:hover{
+        background-color:#645858;
+        color:white;
+        border-radius:0.8rem;
+        cursor:pointer;
     }
 `
 
@@ -158,8 +164,24 @@ export default function Page() {
                         </Function>
                         <MainWrapper>
                             <PathWrapper>
-                                <Button disabled={!curPath} size="large" onClick={() => { router.back() }}>Back</Button>
-                                <h1>{`Now at: ` + (curPath ? curPath : "/")}</h1>
+                                {/* <Button disabled={!curPath} size="large" onClick={() => { router.back() }}>Back</Button> */}
+                                {/* <h1> &nbsp;{`Now at: ` + (curPath ? curPath : "/")}</h1> */}
+                                <h1> &nbsp;Now at: </h1>
+                                <Tag onClick={()=>{router.push("/")}} className={"tag"}> Home </Tag>
+                                {curPath.split("/").map((e,idx)=>{return (idx === 0)?null
+                                    :<>
+                                        <h1>{">"}</h1>
+                                        <Tag key={idx} onClick={()=>{
+                                            let path = "";
+                                            curPath.split("/").forEach((e,index)=>{if(index !== 0 && index <= idx)path = path + "/" + e;})
+                                            let hash = "";
+                                            if (typeof window !== 'undefined')
+                                                hash = window.btoa(path);
+                                            console.log(hash)
+                                            console.log(path)
+                                            router.push("/directory/" + hash)
+                                        }}> {e} </Tag>
+                                </>})}
                             </PathWrapper>
                             <StorageWrapper>
                                 {dir.map((e, idx) => {
