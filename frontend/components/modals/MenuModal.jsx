@@ -1,7 +1,7 @@
 import { Modal, Button, Space } from "antd";
 import { FileTextOutlined, DownloadOutlined, DeleteOutlined } from "@ant-design/icons"
 import FileDownload from 'js-file-download'
-import axios from './api';
+import axios from '../api';
 import { useState } from 'react'
 
 const BasicModal = ({ open, onCancel, target, curPath, setChange, mode }) => {
@@ -59,7 +59,7 @@ const BasicModal = ({ open, onCancel, target, curPath, setChange, mode }) => {
             footer={
                 <Space >
                     <Button onClick={() => { mode === "file" ? downloadFile(target) : downloadDirectory(target) }}><DownloadOutlined />DownLoad</Button>
-                    <Button danger onClick={() => {setWarning(true) }}><DeleteOutlined />Delete</Button>
+                    <Button danger onClick={() => { setWarning(true) }}><DeleteOutlined />Delete</Button>
                     <Button type="primary" onClick={() => { onCancel() }}>Close</Button>
                 </Space>
             }
@@ -69,10 +69,10 @@ const BasicModal = ({ open, onCancel, target, curPath, setChange, mode }) => {
                 title="Warning"
                 okText="Confirm"
                 cancelText="Cancel"
-                onCancel={()=>{setWarning(false)}}
-                onOk={async() => {setWarning(false);if(mode === "file") {await deleteFile(target);} else await deleteDirectory(target);}}
-                // onOk={async() => {setWarning(false)}}
-            
+                onCancel={() => { setWarning(false) }}
+                onOk={async () => { setWarning(false); if (mode === "file") { await deleteFile(target); } else await deleteDirectory(target); }}
+            // onOk={async() => {setWarning(false)}}
+
             >
                 <p> Once the deletion process is complete, it cannot be undone </p>
             </Modal>

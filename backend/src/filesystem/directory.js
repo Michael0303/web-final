@@ -127,14 +127,14 @@ const userDirSize = async (username) => {
     return await dirSize(dir)
 }
 
-const deleteDir = async(username, dirPath)=>{
+const deleteDir = async (username, dirPath) => {
     const directoryPath = path.join(home_path, username, dirPath)
     if (!isLegal(username, directoryPath)) {
         console.log("invalid path.", relativePath)
         return { error: "invalid path." }
     }
     try {
-        await fs.promises.rm(directoryPath,{recursive:true});
+        await fs.promises.rm(directoryPath, { recursive: true });
         return {}
     } catch (err) {
         if (err.code === "ENOENT") {
@@ -145,7 +145,22 @@ const deleteDir = async(username, dirPath)=>{
     }
 }
 
+const moveDir = async (username, oldpath, target, dst) => {
+    const oldPath = path.join(home_path, username, oldpath, target)
+    const dstPath = path.join(home_path, username, dst, target)
+    if (!isLegal(username, oldPath) || !isLegal(username, dstPath)) {
+        return { error: "invalid path." }
+    }
+    try {
+        console.log(`move ${oldPath} to ${dstPath}`)
+        await fs.promises.rename(oldPath, dstPath)
+        return {}
+    } catch (err) {
+        console.log(err)
+        throw err
+    }
+}
 
 makeDir(home_path) //make home directory
 
-export { makeUserHome, listDir, makeUserDir, userDirSize, checkDir, deleteDir }
+export { makeUserHome, listDir, makeUserDir, userDirSize, checkDir, deleteDir, moveDir }

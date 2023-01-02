@@ -1,7 +1,7 @@
 import { Modal, Form, Input } from "antd";
 import { FormProvider } from "rc-field-form";
 import { useRef, useState } from 'react'
-import axios from './api';
+import axios from '../api';
 
 const BasicModal = ({ open, onCancel, curPath, setChange }) => {
 

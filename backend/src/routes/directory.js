@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { auth } from "../middlewares/session"
-import { listDir, makeUserDir, checkDir, deleteDir } from "../filesystem/directory"
+import { listDir, makeUserDir, checkDir, deleteDir, moveDir } from "../filesystem/directory"
 import { zip } from 'zip-a-folder';
 import fs from "fs"
 import path from "path";
@@ -34,13 +34,17 @@ directoryRouter.get("/download", auth, async (req, res) => {
     console.log("zipping dir: " + userDirPath)
     await zip(userDirPath, zipPath)
     res.status(200).sendFile(zipPath)
-    // fs.unlink(zipPath)
+    try {
+        await fs.promises.rm(zipPath)
+    } catch (err) {
+        console.log(err)
+    }
 })
 
 directoryRouter.delete("/delete", auth, async (req, res) => {
     console.log("get delete request")
     const { path = "/" } = req.body
-    const {error} = await deleteDir(req.session.username,path)
+    const { error } = await deleteDir(req.session.username, path)
     if (error) {
         return res.status(400).json({ error })
     }
@@ -48,5 +52,14 @@ directoryRouter.delete("/delete", auth, async (req, res) => {
     // const {error} = await deleteFile(req.session.username,path)
 })
 
+directoryRouter.post("/move", auth, async (req, res) => {
+    const { path = "/", target, dst = "/" } = req.body
+    console.log(`try move ${target} from ${path} to ${dst}`)
+    const { error } = await moveDir(req.session.username, path, target, dst)
+    if (error) {
+        return res.status(400).json({ error })
+    }
+    res.status(200).json({ status: "directory move succeeded." })
+})
 
 export default directoryRouter

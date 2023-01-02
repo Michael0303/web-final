@@ -6,8 +6,7 @@ import { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components';
 import axios from '../components/api';
 import { Button, Menu, Space } from 'antd';
-import DirModal from '../components/DirModal'
-import FileModal from '../components/FileModal'
+import DirModal from './modals/DirModal'
 import folderPic from '../pic/folderPic.png'
 import filePic from '../pic/filePic.png'
 import Image from 'next/image'
@@ -15,8 +14,9 @@ import Function from './Function'
 import Logout from './Logout'
 import Background from './Background'
 import DashBoard from './DashBoard'
-import MenuModal from '../components/MenuModal'
-import MoveModal from './MoveModal'
+import FileModal from './modals/FileModal'
+import MenuModal from './modals/MenuModal'
+import MoveModal from './modals/MoveModal'
 
 const MainWrapper = styled.div`
     height: 75vh;
@@ -87,19 +87,19 @@ export default function Page() {
 
     const dragItem = useRef();
     const dropItem = useRef();
-    
 
 
-    const dragStart = (e,name,isDirectory) => {
-        dragItem.current = {name:name,isDirectory:isDirectory};
+
+    const dragStart = (e, name, isDirectory) => {
+        dragItem.current = { name: name, isDirectory: isDirectory };
     };
-    
-    const drop = (e,name,isDirectory)=> {
-        dropItem.current = {name:curPath + "/" + name,isDirectory:isDirectory};
-        if(dropItem.current.name !== curPath + "/" + dragItem.current.name && dropItem.current.isDirectory)
+
+    const drop = (e, name, isDirectory) => {
+        dropItem.current = { name: curPath + "/" + name, isDirectory: isDirectory };
+        if (dropItem.current.name !== curPath + "/" + dragItem.current.name && dropItem.current.isDirectory)
             setMoveModalOpen(true);
     }
-    
+
 
     const { curPathHash } = router.query;
     let curPath = "";
@@ -188,46 +188,48 @@ export default function Page() {
                                 {/* <Button disabled={!curPath} size="large" onClick={() => { router.back() }}>Back</Button> */}
                                 {/* <h1> &nbsp;{`Now at: ` + (curPath ? curPath : "/")}</h1> */}
                                 <h1> &nbsp;Now at: </h1>
-                                <Tag onClick={()=>{router.push("/")}} 
+                                <Tag onClick={() => { router.push("/") }}
                                     className={"tag"}
-                                    onDragOver={(event)=>{event.stopPropagation();event.preventDefault();}}
-                                    onDrop={(event)=>{
-                                        dropItem.current = {name:"/",isDirectory:true};
-                                        if(curPath)
+                                    onDragOver={(event) => { event.stopPropagation(); event.preventDefault(); }}
+                                    onDrop={(event) => {
+                                        dropItem.current = { name: "/", isDirectory: true };
+                                        if (curPath)
                                             setMoveModalOpen(true);
                                     }}
                                 > Home </Tag>
-                                {curPath.split("/").map((e,idx)=>{return (idx === 0)?null
-                                    :<>
-                                        <h1>{">"}</h1>
-                                        <Tag key={idx} 
-                                            onClick={()=>{
-                                                let path = "";
-                                                curPath.split("/").forEach((e,index)=>{if(index !== 0 && index <= idx)path = path + "/" + e;})
-                                                let hash = "";
-                                                if (typeof window !== 'undefined')
-                                                    hash = window.btoa(path);
-                                                router.push("/directory/" + hash)
-                                            }}
-                                            onDragOver={(event)=>{event.stopPropagation();event.preventDefault();}}
-                                            onDrop={(event)=>{
-                                                let path = "";
-                                                curPath.split("/").forEach((e,index)=>{if(index !== 0 && index <= idx)path = path + "/" + e;})
-                                                dropItem.current = {name:path,isDirectory:true};
-                                                if(curPath !== path)
-                                                    setMoveModalOpen(true);
-                                            }}
-                                        > {e} </Tag>
-                                </>})}
+                                {curPath.split("/").map((e, idx) => {
+                                    return (idx === 0) ? null
+                                        : <>
+                                            <h1>{">"}</h1>
+                                            <Tag key={idx}
+                                                onClick={() => {
+                                                    let path = "";
+                                                    curPath.split("/").forEach((e, index) => { if (index !== 0 && index <= idx) path = path + "/" + e; })
+                                                    let hash = "";
+                                                    if (typeof window !== 'undefined')
+                                                        hash = window.btoa(path);
+                                                    router.push("/directory/" + hash)
+                                                }}
+                                                onDragOver={(event) => { event.stopPropagation(); event.preventDefault(); }}
+                                                onDrop={(event) => {
+                                                    let path = "";
+                                                    curPath.split("/").forEach((e, index) => { if (index !== 0 && index <= idx) path = path + "/" + e; })
+                                                    dropItem.current = { name: path, isDirectory: true };
+                                                    if (curPath !== path)
+                                                        setMoveModalOpen(true);
+                                                }}
+                                            > {e} </Tag>
+                                        </>
+                                })}
                             </PathWrapper>
                             <StorageWrapper>
                                 {dir.map((e, idx) => {
                                     return (
-                                        <div key={e} 
-                                            onDragStart={(event) => dragStart(event,e,true)}
-                                            onDragOver={(event)=>{event.stopPropagation();event.preventDefault();}}
-                                            onDrop={(event)=>drop(event,e,true)}
-                                            draggable 
+                                        <div key={e}
+                                            onDragStart={(event) => dragStart(event, e, true)}
+                                            onDragOver={(event) => { event.stopPropagation(); event.preventDefault(); }}
+                                            onDrop={(event) => drop(event, e, true)}
+                                            draggable
                                             onContextMenu={(event) => {
                                                 event.preventDefault()
                                                 contextMenuHandler(e)
@@ -242,10 +244,10 @@ export default function Page() {
                                 })}
                                 {file.map((e, idx) => {
                                     return (
-                                        <div onDragStart={(event) => dragStart(event,e,false)}
-                                            onDragOver={(event)=>{event.stopPropagation();event.preventDefault();}}
-                                            onDrop={(event)=>drop(event,e,false)}
-                                            draggable  
+                                        <div onDragStart={(event) => dragStart(event, e, false)}
+                                            onDragOver={(event) => { event.stopPropagation(); event.preventDefault(); }}
+                                            onDrop={(event) => drop(event, e, false)}
+                                            draggable
                                             key={e} className={"file"} onClick={() => { fileCilckHandler(e) }} style={{ display: "flex", width: "15vw", height: "6vh", border: "2px solid black", margin: "20px", alignContent: "center", borderRadius: "0.5rem" }}>
                                             <div style={{ width: "18%", display: "flex", alignItems: "center" }}>
                                                 <Image src={filePic} alt="Picture of the file" style={{ height: "75%", width: "75%" }} />
@@ -260,7 +262,7 @@ export default function Page() {
                     <DirModal open={DirmodalOpen} onCancel={() => { setDirModalOpen(false) }} onCreate={createDir} />
                     <FileModal open={fileModalOpen} onCancel={() => { setFileModalOpen(false) }} curPath={curPath} setChange={setChange} />
                     <MenuModal open={menuModalOpen} onCancel={() => { setMenuModalOpen(false) }} target={target} curPath={curPath} setChange={setChange} mode={mode} />
-                    <MoveModal open={moveModalOpen} onCancel={() => {setMoveModalOpen(false)}} target={dragItem.current?dragItem.current.name:""} dst={dropItem.current?dropItem.current.name:""} curPath={curPath?curPath:"/"}/>
+                    <MoveModal open={moveModalOpen} onCancel={() => { setMoveModalOpen(false) }} target={dragItem.current ? dragItem.current.name : ""} dst={dropItem.current ? dropItem.current.name : ""} curPath={curPath ? curPath : "/"} setChange={setChange} />
                 </>
             }
         </div>
