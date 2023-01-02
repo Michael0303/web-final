@@ -1,5 +1,6 @@
 import path from "path"
 import fs from "fs"
+import Link from "../models/link"
 
 const home_path = path.join(__dirname, "../../home/")
 
@@ -161,6 +162,25 @@ const moveDir = async (username, oldpath, target, dst) => {
     }
 }
 
+const shareDir = async (username, target) => {
+    const targetPath = path.join(home_path, username, target)
+    if (!isLegal(username, targetPath)) {
+        return { error: "invalid path." }
+    }
+    try {
+        console.log(`sharing ${targetPath}`)
+        const newLink = await new Link({
+            target: targetPath
+        }).save()
+        return {
+            link: newLink._id
+        }
+    } catch (err) {
+        console.log(err)
+        throw err
+    }
+}
+
 makeDir(home_path) //make home directory
 
-export { makeUserHome, listDir, makeUserDir, userDirSize, checkDir, deleteDir, moveDir }
+export { makeUserHome, listDir, makeUserDir, userDirSize, checkDir, deleteDir, moveDir, shareDir }

@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { auth } from "../middlewares/session"
-import { listDir, makeUserDir, checkDir, deleteDir, moveDir } from "../filesystem/directory"
+import { listDir, makeUserDir, checkDir, deleteDir, moveDir, shareDir } from "../filesystem/directory"
 import { zip } from 'zip-a-folder';
 import fs from "fs"
 import path from "path";
@@ -60,6 +60,16 @@ directoryRouter.post("/move", auth, async (req, res) => {
         return res.status(400).json({ error })
     }
     res.status(200).json({ status: "directory move succeeded." })
+})
+
+directoryRouter.post("/share", auth, async (req, res) => {
+    const { path = "/" } = req.body
+    console.log(`try sharing ${path}`)
+    const { link, error } = await shareDir(req.session.username, path)
+    if (error) {
+        return res.status(400).json({ error })
+    }
+    res.status(200).json({ link, status: "sharing succeeded." })
 })
 
 export default directoryRouter

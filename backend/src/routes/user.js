@@ -3,6 +3,7 @@ import User from "../models/user"
 import { userDirSize, makeUserHome } from "../filesystem/directory"
 import { auth } from "../middlewares/session"
 import bcrypt from "bcryptjs"
+import Link from "../models/link"
 
 const userRouter = Router()
 
@@ -113,6 +114,16 @@ userRouter.get('/usage', auth, async (req, res) => {
     const user = await User.findOne({ username })
     const { usage } = user
     res.status(200).json({ usage })
+})
+
+userRouter.get('/share', auth, async (req, res) => {
+    const { sharedID } = req.query
+    const link = await Link.findOne({
+        _id: sharedID
+    })
+    console.log(`get link: ${sharedID}`)
+    console.log(link)
+    res.status(200).json({ link })
 })
 
 userRouter.post("/getPsps", auth, (req, res) => {

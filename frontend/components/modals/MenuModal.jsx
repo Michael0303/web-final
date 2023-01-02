@@ -1,12 +1,15 @@
-import { Modal, Button, Space } from "antd";
-import { FileTextOutlined, DownloadOutlined, DeleteOutlined } from "@ant-design/icons"
+import { Modal, Button, Space, Typography } from "antd";
+import { FileTextOutlined, DownloadOutlined, DeleteOutlined, ShareAltOutlined } from "@ant-design/icons"
 import FileDownload from 'js-file-download'
 import axios from '../api';
 import { useState } from 'react'
+import Link from "next/link";
 
 const BasicModal = ({ open, onCancel, target, curPath, setChange, mode }) => {
 
     const [warning, setWarning] = useState(false)
+    const [sharing, setSharing] = useState(false)
+    const [link, setLink] = useState(undefined)
 
     const downloadFile = async (e) => {
         axios({
@@ -46,6 +49,18 @@ const BasicModal = ({ open, onCancel, target, curPath, setChange, mode }) => {
         onCancel()
     }
 
+    const share = async (e) => {
+        try {
+            const { data: { link } } = await axios.post('/api/directory/share', {
+                path: curPath + "/" + e
+            })
+            // const link = "https://ant.design"
+            setLink(link)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
 
     return (
         <Modal
@@ -59,6 +74,7 @@ const BasicModal = ({ open, onCancel, target, curPath, setChange, mode }) => {
             footer={
                 <Space >
                     <Button onClick={() => { mode === "file" ? downloadFile(target) : downloadDirectory(target) }}><DownloadOutlined />DownLoad</Button>
+                    <Button onClick={() => { setSharing(true) }}><ShareAltOutlined />Share</Button>
                     <Button danger onClick={() => { setWarning(true) }}><DeleteOutlined />Delete</Button>
                     <Button type="primary" onClick={() => { onCancel() }}>Close</Button>
                 </Space>
@@ -76,7 +92,25 @@ const BasicModal = ({ open, onCancel, target, curPath, setChange, mode }) => {
             >
                 <p> Once the deletion process is complete, it cannot be undone </p>
             </Modal>
-
+            <Modal
+                open={sharing}
+                title="Sharing"
+                cancelText="Cancel"
+                onCancel={() => { setSharing(false) }}
+                footer={
+                    <Button type="primary" onClick={() => { setSharing(false) }}>Close</Button>
+                }
+            >
+                <Space>
+                    <Button type="primary" onClick={async () => { await share(target) }}>
+                        <ShareAltOutlined />
+                        Share
+                    </Button>
+                    {(link === undefined) ? null : <Typography>
+                        <Link href={`/share/${link}`}>{`http://localhost:3000/share/${link}`}</Link>
+                    </Typography>}
+                </Space>
+            </Modal>
         </Modal>
     );
 };
