@@ -73,7 +73,7 @@ const StorageWrapper = styled.span`
 `
 
 export default function Page() {
-    const { username, signedIn, privileged, user, setSignedIn, status, setStatus } = useUser()
+    const { username, signedIn, privileged, user, setUser, setSignedIn, status, setStatus } = useUser()
     const router = useRouter()
     const [dir, setDir] = useState([])
     const [file, setFile] = useState([])
@@ -126,9 +126,15 @@ export default function Page() {
         if (change) {
             getDir(curPath)
             //getFile()
+            getUsage()
             setChange(false)
         }
     }, [change])
+
+    const getUsage = async () => {
+        const { data : { usage } } = await axios.get('/api/user/usage')
+        setUser({...user, usage })
+    }
 
     const getDir = async (dirName) => {
         const { data: { status, directory } } = await axios.get('/api/directory', { params: { path: dirName } })
