@@ -1,3 +1,4 @@
 const SECRET = "JWT_TEST_SECRET"
+const USAGE_LIMIT = 5 * 1e6 // 5MB
 
-export { SECRET }
+export { SECRET, USAGE_LIMIT }

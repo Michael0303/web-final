@@ -54,8 +54,9 @@ const deleteFile = async(username,filePath)=>{
         return { error: "invalid path." }
     }
     try{
+        const { size } = await fs.promises.stat(userFilePath)
         await fs.promises.rm(userFilePath)
-        return {}
+        return { size }
     }catch(err){
         switch (err.code) {
             case "ENOENT":
