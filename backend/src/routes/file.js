@@ -24,11 +24,11 @@ fileRouter.post("/upload", auth, upload.single("file"), async (req, res) => {
     if (user.usage + file.size > USAGE_LIMIT) {
         return res.status(400).json({error: "usage limit exceeded!"})
     }
-    const { error } = await writeFile(req.session.username, path, file)
+    const { error, sizeDiff } = await writeFile(req.session.username, path, file)
     if (error) {
         return res.status(400).json({ error })
     }
-    user.usage += file.size
+    user.usage += sizeDiff
     user.save()
         .then(()=>{
             console.log(`change usage of ${user.username} to ${user.usage}`)

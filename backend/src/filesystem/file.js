@@ -34,19 +34,25 @@ const writeFile = async (username, folderPath, multerFile) => {
         return { error: "invalid path." }
     }
     try {
-        await fs.promises.stat(userFolderpath)
+        const dirents = await fs.promises.readdir(userFolderpath, { withFileTypes: true })
+        const targetDirent = dirents.find((dirent)=> dirent.name === originalname)
+        if (targetDirent && targetDirent.isDirectory()) {
+            return { error: "path is a directory." }
+        }
+        const originalSize = targetDirent ?
+             (await fs.promises.stat(path.join(userFolderpath, originalname))).size : 0
         await fs.promises.writeFile(
             path.join(userFolderpath, originalname),
             buffer
         )
-        return {}
+        return { sizeDiff: multerFile.size - originalSize }
     } catch (err) {
         if (err.code === "ENOENT") return { error: "no such directory." }
         throw err
     }
 }
 
-const deleteFile = async(username,filePath)=>{
+const deleteFile = async (username, filePath) => {
     const userFilePath = path.join(home_path, username, filePath)
     const relativePath = path.relative(home_path, userFilePath)
     if (!relativePath.startsWith(username)) {

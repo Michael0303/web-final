@@ -108,6 +108,13 @@ userRouter.get('/all', async (req, res) => {
     }
 })
 
+userRouter.get('/usage', auth, async (req, res) => {
+    const { username } = req.session
+    const user = await User.findOne({ username })
+    const { usage } = user
+    res.status(200).json({ usage })
+})
+
 userRouter.post("/getPsps", auth, (req, res) => {
     res.status(200).send("pspsps")
 })
