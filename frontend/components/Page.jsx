@@ -1,11 +1,10 @@
 import { useUser } from '../components/hooks/useUser'
 import Title from '../components/Title'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components';
 import axios from '../components/api';
-import { Button, Menu, Space } from 'antd';
+import { Button, Space } from 'antd';
 import DirModal from './modals/DirModal'
 import folderPic from '../pic/folderPic.png'
 import filePic from '../pic/filePic.png'
@@ -13,7 +12,6 @@ import Image from 'next/image'
 import Function from './Function'
 import Logout from './Logout'
 import Background from './Background'
-import DashBoard from './DashBoard'
 import FileModal from './modals/FileModal'
 import MenuModal from './modals/MenuModal'
 import MoveModal from './modals/MoveModal'
@@ -187,7 +185,6 @@ export default function Page() {
                             <Button onClick={() => { setFileModalOpen(true) }}> Upload file</Button>
                             <Button onClick={() => { setDirModalOpen(true) }}> Create directory </Button>
                             <Logout />
-                            {privileged ? <DashBoard /> : null}
                         </Function>
                         <MainWrapper>
                             <PathWrapper>

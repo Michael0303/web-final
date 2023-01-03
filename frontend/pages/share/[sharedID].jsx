@@ -1,11 +1,9 @@
 import { useRouter } from "next/router"
 import { useEffect, useState, useRef } from "react";
-import { useUser } from "../../components/hooks/useUser";
 import axios from "../../components/api"
 import Title from "../../components/Title";
 import Background from "../../components/Background";
 import Function from "../../components/Function";
-import Logout from "../../components/Logout";
 import Link from "next/link";
 import styled from "styled-components";
 import { Button, Space } from "antd";
