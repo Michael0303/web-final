@@ -116,13 +116,14 @@ userRouter.get('/usage', auth, async (req, res) => {
     res.status(200).json({ usage })
 })
 
-userRouter.get('/share', auth, async (req, res) => {
+userRouter.get('/share', async (req, res) => {
     const { sharedID } = req.query
     const link = await Link.findOne({
         _id: sharedID
     })
     console.log(`get link: ${sharedID}`)
     console.log(link)
+    req.session.username = link.username
     res.status(200).json({ link })
 })
 

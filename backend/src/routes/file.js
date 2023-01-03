@@ -20,9 +20,9 @@ fileRouter.post("/upload", auth, upload.single("file"), async (req, res) => {
     console.log("get upload request")
     const { file } = req
     const { path = "/" } = req.query
-    const user = await User.findOne({username: req.session.username}).exec()
+    const user = await User.findOne({ username: req.session.username }).exec()
     if (user.usage + file.size > USAGE_LIMIT) {
-        return res.status(400).json({error: "usage limit exceeded!"})
+        return res.status(400).json({ error: "usage limit exceeded!" })
     }
     const { error, sizeDiff } = await writeFile(req.session.username, path, file)
     if (error) {
@@ -30,10 +30,10 @@ fileRouter.post("/upload", auth, upload.single("file"), async (req, res) => {
     }
     user.usage += sizeDiff
     user.save()
-        .then(()=>{
+        .then(() => {
             console.log(`change usage of ${user.username} to ${user.usage}`)
         })
-        .catch(()=>{
+        .catch(() => {
             console.log(`changing usage of ${user.username} failed!!`)
         })
     res.status(200).json({ status: "file upload succeeded.", stage: user.usage })
@@ -42,17 +42,17 @@ fileRouter.post("/upload", auth, upload.single("file"), async (req, res) => {
 fileRouter.delete("/delete", auth, async (req, res) => {
     console.log("get delete request")
     const { path = "/" } = req.body
-    const { error, size } = await deleteFile(req.session.username,path)
+    const { error, size } = await deleteFile(req.session.username, path)
     if (error) {
         return res.status(400).json({ error })
     }
-    const user = await User.findOne({username: req.session.username}).exec()
+    const user = await User.findOne({ username: req.session.username }).exec()
     user.usage -= size;
     user.save()
-        .then(()=>{
+        .then(() => {
             console.log(`change usage of ${user.username} to ${user.usage}`)
         })
-        .catch(()=>{
+        .catch(() => {
             console.log(`changing usage of ${user.username} failed!!`)
         })
     res.status(200).json({ status: "file delete succeeded.", usage: user.usage })

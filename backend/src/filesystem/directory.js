@@ -170,7 +170,8 @@ const shareDir = async (username, target) => {
     try {
         console.log(`sharing ${targetPath}`)
         const newLink = await new Link({
-            target: targetPath
+            username,
+            target,
         }).save()
         return {
             link: newLink._id
