@@ -6,7 +6,5 @@ COPY . /app
 WORKDIR /app
 
 RUN corepack enable
-RUN yarn install:prod
-RUN yarn build
-
+RUN yarn install
 CMD ["yarn", "deploy"]
