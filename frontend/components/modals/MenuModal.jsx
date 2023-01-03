@@ -4,9 +4,12 @@ import FileDownload from 'js-file-download'
 import axios from '../api';
 import { useState } from 'react'
 import Link from "next/link";
+import { useRouter } from 'next/router'
+
+const API_ROOT = process.env.NODE_ENV === "production" ? "https://frontend-production-f245.up.railway.app/" : "http://localhost:3000/"
 
 const BasicModal = ({ open, onCancel, target, curPath, setChange, mode }) => {
-
+    const { asPath } = useRouter()
     const [warning, setWarning] = useState(false)
     const [sharing, setSharing] = useState(false)
     const [link, setLink] = useState(undefined)
@@ -107,7 +110,7 @@ const BasicModal = ({ open, onCancel, target, curPath, setChange, mode }) => {
                         Share
                     </Button>
                     {(link === undefined) ? null : <Typography>
-                        <Link href={`/share/${link}`}>{`http://localhost:3000/share/${link}`}</Link>
+                        <Link href={`/share/${link}`}>{`${API_ROOT}share/${link}`}</Link>
                     </Typography>}
                 </Space>
             </Modal>
