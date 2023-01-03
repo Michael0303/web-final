@@ -198,7 +198,7 @@ export default function Share() {
                         <Function>
                             <Button onClick={() => { setFileModalOpen(true) }}> Upload file</Button>
                             <Button onClick={() => { setDirModalOpen(true) }}> Create directory </Button>
-                            <Logout />
+                            <Button onClick={() => router.replace("/")}><Link href="/">Exit</Link></Button>
                         </Function>
                         <MainWrapper>
                             <PathWrapper>

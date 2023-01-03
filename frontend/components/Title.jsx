@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Divider, Space, Tag } from 'antd'
-
+import { UserOutlined, UsbOutlined } from '@ant-design/icons'
 const Wrapper = styled.div`
     height: 25vh;
     background-color: pink;
@@ -23,9 +23,9 @@ export default function Title({ title, user }) {
             <Divider style={{ backgroundColor: "white" }} />
             {user ?
                 <Space>
-                    <Tag>{user.username}</Tag>
-                    <Tag>{user.role}</Tag>
-                    <Tag>{user.usage / 1000000} MB</Tag>
+                    {/* <Tag>{user.username}</Tag> */}
+                    <Tag color="processing" icon={<UserOutlined />}>{user.role}</Tag>
+                    <Tag color={user.percentage > 0.8 ? "warning" : "success"} icon={<UsbOutlined />}>{user.usage / 1000000} MB</Tag>
                 </Space>
                 : null}
         </Wrapper>

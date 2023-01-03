@@ -132,8 +132,8 @@ export default function Page() {
     }, [change])
 
     const getUsage = async () => {
-        const { data : { usage } } = await axios.get('/api/user/usage')
-        setUser({...user, usage })
+        const { data: { usage, percentage } } = await axios.get('/api/user/usage')
+        setUser({ ...user, usage, percentage })
     }
 
     const getDir = async (dirName) => {

@@ -4,6 +4,7 @@ import { userDirSize, makeUserHome } from "../filesystem/directory"
 import { auth } from "../middlewares/session"
 import bcrypt from "bcryptjs"
 import Link from "../models/link"
+import { USAGE_LIMIT } from "../config"
 
 const userRouter = Router()
 
@@ -113,7 +114,7 @@ userRouter.get('/usage', auth, async (req, res) => {
     const { username } = req.session
     const user = await User.findOne({ username })
     const { usage } = user
-    res.status(200).json({ usage })
+    res.status(200).json({ usage, percentage: usage / USAGE_LIMIT })
 })
 
 userRouter.get('/share', async (req, res) => {
