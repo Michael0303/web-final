@@ -135,8 +135,9 @@ const deleteDir = async (username, dirPath) => {
         return { error: "invalid path." }
     }
     try {
+        const { size } = await fs.promises.stat(directoryPath)
         await fs.promises.rm(directoryPath, { recursive: true });
-        return {}
+        return { size }
     } catch (err) {
         if (err.code === "ENOENT") {
             console.log("no such directory.", directoryPath)

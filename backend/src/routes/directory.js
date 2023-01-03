@@ -4,6 +4,7 @@ import { listDir, makeUserDir, checkDir, deleteDir, moveDir, shareDir } from "..
 import { zip } from 'zip-a-folder';
 import fs from "fs"
 import path from "path";
+import User from "../models/user"
 const zipPath = path.join(__dirname, "../../home/", "download.zip")
 const directoryRouter = Router()
 
@@ -44,10 +45,19 @@ directoryRouter.get("/download", auth, async (req, res) => {
 directoryRouter.delete("/delete", auth, async (req, res) => {
     console.log("get delete request")
     const { path = "/" } = req.body
-    const { error } = await deleteDir(req.session.username, path)
+    const { error, size } = await deleteDir(req.session.username, path)
     if (error) {
         return res.status(400).json({ error })
     }
+    const user = await User.findOne({ username: req.session.username }).exec()
+    user.usage -= size;
+    user.save()
+        .then(() => {
+            console.log(`change usage of ${user.username} to ${user.usage}`)
+        })
+        .catch(() => {
+            console.log(`changing usage of ${user.username} failed!!`)
+        })
     res.status(200).json({ status: "directory delete succeeded." })
     // const {error} = await deleteFile(req.session.username,path)
 })
