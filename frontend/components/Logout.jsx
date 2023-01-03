@@ -9,7 +9,11 @@ export default function Logout() {
 
     const handleLogout = () => {
         setSignedIn(false)
-        axios.post('/api/user/logout')
+        try {
+            axios.post('/api/user/logout')
+        } catch (err) {
+            console.log(err)
+        }
         router.replace("/")
     }
 

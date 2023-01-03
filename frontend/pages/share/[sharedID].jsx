@@ -84,6 +84,7 @@ export default function Share() {
     const [curPath, setCurPath] = useState(undefined)
     const { sharedID } = router.query;
     const [load, setLoad] = useState(false)
+    const [root, setRoot] = useState(undefined)
 
     useEffect(() => {
         if (sharedID) {
@@ -101,6 +102,7 @@ export default function Share() {
                 })
                 const { username, target } = link
                 setCurPath(target)
+                setRoot(target)
             }
             getLink()
         }
@@ -122,20 +124,6 @@ export default function Share() {
             setMoveModalOpen(true);
     }
 
-
-    // const { curPathHash } = router.query;
-    // let curPath = "";
-    // if (typeof window !== "undefined" && signedIn) {
-    //     if (curPathHash) {
-    //         curPath = window.atob(curPathHash);
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     if (!signedIn) {
-    //         router.push("/signin")
-    //     }
-    // }, [signedIn])
 
     useEffect(() => {
         // if(typeof window !== "undefined")
@@ -184,6 +172,10 @@ export default function Share() {
         // setChange(true)
     }
 
+    const back = (e) => {
+        setCurPath(curPath.substring(0, curPath.lastIndexOf('/')))
+    }
+
     const contextMenuHandler = async (e) => {
         setTarget(e)
         setMode("directory")
@@ -210,9 +202,9 @@ export default function Share() {
                         </Function>
                         <MainWrapper>
                             <PathWrapper>
-                                {/* <Button disabled={!curPath} size="large" onClick={() => { router.back() }}>Back</Button> */}
-                                {/* <h1> &nbsp;{`Now at: ` + (curPath ? curPath : "/")}</h1> */}
-                                <h1> &nbsp;Now at: </h1>
+                                <Button disabled={curPath === root} size="large" onClick={() => { back() }}>Back</Button>
+                                <h1> &nbsp;{`Now at: ` + (curPath ? curPath : "/")}</h1>
+                                {/* <h1> &nbsp;Now at: </h1>
                                 <Tag onClick={() => { router.push("/") }}
                                     className={"tag"}
                                     onDragOver={(event) => { event.stopPropagation(); event.preventDefault(); }}
@@ -245,7 +237,7 @@ export default function Share() {
                                                 }}
                                             > {e} </Tag>
                                         </>
-                                })}
+                                })} */}
                             </PathWrapper>
                             <StorageWrapper>
                                 {dir.map((e, idx) => {

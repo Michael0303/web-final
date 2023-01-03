@@ -74,7 +74,7 @@ const BasicModal = ({ open, onCancel, target, curPath, setChange, mode }) => {
             footer={
                 <Space >
                     <Button onClick={() => { mode === "file" ? downloadFile(target) : downloadDirectory(target) }}><DownloadOutlined />DownLoad</Button>
-                    <Button onClick={() => { setSharing(true) }}><ShareAltOutlined />Share</Button>
+                    {(mode === "file") ? null : <Button onClick={() => { setSharing(true) }}><ShareAltOutlined />Share</Button>}
                     <Button danger onClick={() => { setWarning(true) }}><DeleteOutlined />Delete</Button>
                     <Button type="primary" onClick={() => { onCancel() }}>Close</Button>
                 </Space>

@@ -20,8 +20,11 @@ fileRouter.post("/upload", auth, upload.single("file"), async (req, res) => {
     console.log("get upload request")
     const { file } = req
     const { path = "/" } = req.query
+    console.log(req.session.username)
     const user = await User.findOne({ username: req.session.username }).exec()
+    console.log(user)
     if (user.usage + file.size > USAGE_LIMIT) {
+        console.log("usage out of limit")
         return res.status(400).json({ error: "usage limit exceeded!" })
     }
     const { error, sizeDiff } = await writeFile(req.session.username, path, file)
