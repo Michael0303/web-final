@@ -93,14 +93,18 @@ export default function Share() {
         if (load) {
             const getLink = async () => {
                 console.log(`try get link: ${sharedID}`)
-                const { data: { link } } = await axios.get("/api/user/share", {
-                    params: {
-                        sharedID
-                    }
-                })
-                const { username, target } = link
-                setCurPath(target)
-                setRoot(target)
+                try {
+                    const { data: { link } } = await axios.get("/api/user/share", {
+                        params: {
+                            sharedID
+                        }
+                    })
+                    const { username, target } = link
+                    setCurPath(target)
+                    setRoot(target)
+                } catch (err) {
+                    console.log(err)
+                }
             }
             getLink()
         }
@@ -279,7 +283,7 @@ export default function Share() {
                     <FileModal open={fileModalOpen} onCancel={() => { setFileModalOpen(false) }} curPath={curPath} setChange={setChange} />
                     <MenuModal open={menuModalOpen} onCancel={() => { setMenuModalOpen(false) }} target={target} curPath={curPath} setChange={setChange} mode={mode} />
                     <MoveModal open={moveModalOpen} onCancel={() => { setMoveModalOpen(false) }} target={dragItem.current ? dragItem.current.name : ""} dst={dropItem.current ? dropItem.current.name : ""} curPath={curPath ? curPath : "/"} setChange={setChange} />
-                </> : null}
+                </> : <Background><h1>Link not Found</h1></Background>}
         </div>
     )
 }

@@ -53,7 +53,7 @@ export default function SignIn() {
                 // const { data: { error } } = e.response
                 setStatus({
                     type: 'error',
-                    msg: 'error occur'
+                    msg: 'username or password wrong'
                 })
                 setLoading(false)
             }
